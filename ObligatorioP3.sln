@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dominio", "Dominio\Dominio.csproj", "{49F9891A-A0BB-46DA-B6D1-D960FF9226C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC", "MVC\MVC.csproj", "{1DDF473F-B865-4365-89EA-341A5188DB5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicaAccesoDatos", "LogicaAccesoDatos\LogicaAccesoDatos.csproj", "{F5B9BB3A-D051-4324-A74D-8DBD23FC1020}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49F9891A-A0BB-46DA-B6D1-D960FF9226C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49F9891A-A0BB-46DA-B6D1-D960FF9226C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49F9891A-A0BB-46DA-B6D1-D960FF9226C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49F9891A-A0BB-46DA-B6D1-D960FF9226C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DDF473F-B865-4365-89EA-341A5188DB5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DDF473F-B865-4365-89EA-341A5188DB5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DDF473F-B865-4365-89EA-341A5188DB5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DDF473F-B865-4365-89EA-341A5188DB5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5B9BB3A-D051-4324-A74D-8DBD23FC1020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5B9BB3A-D051-4324-A74D-8DBD23FC1020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5B9BB3A-D051-4324-A74D-8DBD23FC1020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5B9BB3A-D051-4324-A74D-8DBD23FC1020}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A16BE14-9B60-4E70-9EDF-0272E9BEED4F}
+	EndGlobalSection
+EndGlobal
