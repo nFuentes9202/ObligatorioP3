@@ -12,5 +12,6 @@ namespace Dominio.Entidades
         public int Id { get; set; }
         public string CodigoAlpha3 { get; set; }
         public int Nombre { get; set; }
+        //hola
     }
 }
