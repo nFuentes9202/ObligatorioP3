@@ -17,6 +17,6 @@ namespace LogicaAccesoDatos
             string cadenaConexion = @"SERVER=(LocalDb)\MsSqlLocalDb;DATABASE=";
             optionsBuilder.UseSqlServer(cadenaConexion);
         }
-
+        
     }
 }
