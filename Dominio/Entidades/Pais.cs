@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace Dominio.Entidades
 {
-    public class Pais: IEntity
+    public class Pais: IEntity, IValidable
     {
         public int Id { get; set; }
         public string CodigoAlpha3 { get; set; }
         public int Nombre { get; set; }
-        //hola
+
+        public void Validar()
+        {
+            throw new NotImplementedException();
+        }
+        
     }
 }

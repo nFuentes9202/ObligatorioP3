@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace Dominio.Entidades
 {
-    public class Especie: IEntity
+    public class Especie: IEntity, IValidable
     {
         public int Id { get; set; }
         public string Descripcion { get; set; }
+
+        public void Validar()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
