@@ -1,4 +1,6 @@
-﻿using Dominio.InterfacesEntidades;
+﻿using Dominio.Entidades.ValueObjects.Ecosistema;
+using Dominio.InterfacesEntidades;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,8 @@ namespace Dominio.Entidades
         public List<Especie> Especies { get; set; }
         public List<Pais> Paises { get; set; }
         public List<Amenaza> Amenazas { get; set; }
+        public Coordenadas Coordenadas { get; set; }   
+        public Imagen Imagen { get; set; }
         public void Validar()
         {
             throw new NotImplementedException();

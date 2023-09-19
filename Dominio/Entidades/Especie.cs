@@ -1,4 +1,5 @@
-﻿using Dominio.InterfacesEntidades;
+﻿using Dominio.Entidades.ValueObjects.Especie;
+using Dominio.InterfacesEntidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace Dominio.Entidades
         public string Descripcion { get; set; }
         public List<Amenaza> Amenazas { get; set; }
         public List<Ecosistema> Ecosistemas { get; set; }
+        public AtributosFisicos AtributosFisicos { get; set; }
+        public Imagen Imagen { get; set; }
+        public Nombre Nombre { get; set; }
 
         public void Validar()
         {
