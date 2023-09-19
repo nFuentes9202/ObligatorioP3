@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dominio.InterfacesEntidades
 {
-    public interface IValidable
+    public interface IValidable<T> where T : class
     {
         public void Validar();
     }

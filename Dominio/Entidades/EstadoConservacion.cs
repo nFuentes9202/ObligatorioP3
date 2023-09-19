@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dominio.Entidades
 {
-    public class EstadoConservacion: IEntity, IValidable
+    public class EstadoConservacion: IEntity, IValidable<EstadoConservacion>
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
