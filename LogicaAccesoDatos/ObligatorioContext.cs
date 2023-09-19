@@ -10,13 +10,33 @@ namespace LogicaAccesoDatos
 {
     public class ObligatorioContext:DbContext
     {
+        public DbSet<Amenaza> Amenazas { get; set; }
+        public DbSet<Especie> Especies { get; set; }
+        public DbSet<EstadoConservacion> EstadosConservacion { get; set; }
+        public DbSet<Pais> Paises { get; set; }
         public DbSet<Ecosistema> Ecosistemas { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string cadenaConexion = @"SERVER=(LocalDb)\MsSqlLocalDb;DATABASE=";
+            string cadenaConexion = @"SERVER=(LocalDb)\MsSqlLocalDb;DATABASE=ObligatorioP3";
             optionsBuilder.UseSqlServer(cadenaConexion);
         }
-1        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configuración para Especie
+            modelBuilder.Entity<Especie>()
+                .HasOne(e => e.EstadoConservacion)
+                .WithMany()
+                .HasForeignKey(e => e.EstadoConservacionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configuración para Ecosistema 
+            modelBuilder.Entity<Ecosistema>()
+                .HasOne(e => e.EstadoConservacion)
+                .WithMany()
+                .HasForeignKey(e => e.EstadoConservacionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
     }
 }

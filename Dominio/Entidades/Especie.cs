@@ -2,6 +2,7 @@
 using Dominio.InterfacesEntidades;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ namespace Dominio.Entidades
         public AtributosFisicos AtributosFisicos { get; set; }
         public Imagen Imagen { get; set; }
         public Nombre Nombre { get; set; }
-
+        public EstadoConservacion EstadoConservacion { get; set; }
+        public int EstadoConservacionId { get; set; }
         public void Validar()
         {
             throw new NotImplementedException();

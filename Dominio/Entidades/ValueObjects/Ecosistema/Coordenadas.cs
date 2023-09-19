@@ -11,9 +11,12 @@ namespace Dominio.Entidades.ValueObjects.Ecosistema
     [Owned]
     public class Coordenadas
     {
-        public decimal Latitud { get; }
-        public decimal Longitud { get; }
-
+        public decimal Latitud { get;private set; }
+        public decimal Longitud { get;private set; }
+        public Coordenadas()
+        {
+            Validar();
+        }
         public Coordenadas(decimal latitud, decimal longitud)
         {
             Latitud = latitud;

@@ -3,6 +3,7 @@ using Dominio.InterfacesEntidades;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace Dominio.Entidades
         public List<Amenaza> Amenazas { get; set; }
         public Coordenadas Coordenadas { get; set; }   
         public Imagen Imagen { get; set; }
+        public EstadoConservacion EstadoConservacion { get; set; }
+        public int EstadoConservacionId { get; set; }
         public void Validar()
         {
             throw new NotImplementedException();
