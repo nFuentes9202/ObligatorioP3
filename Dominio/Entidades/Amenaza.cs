@@ -1,4 +1,5 @@
-﻿using Dominio.InterfacesEntidades;
+﻿using Dominio.ExcepcionesEntidades;
+using Dominio.InterfacesEntidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,10 @@ namespace Dominio.Entidades
         public List<Especie> Especies { get; set; }
         public void Validar()
         {
+            if(GradoPeligrosidad < 1 || GradoPeligrosidad > 10)
+            {
+                throw new AmenazaException("El grado de peligrosidad debe ser entre 1 y 10");
+            }
             throw new NotImplementedException();
         }
     }

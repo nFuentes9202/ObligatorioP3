@@ -1,4 +1,5 @@
-﻿using Dominio.InterfacesEntidades;
+﻿using Dominio.ExcepcionesEntidades;
+using Dominio.InterfacesEntidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,10 @@ namespace Dominio.Entidades
 
         public void Validar()
         {
+            if(RangoSeguridad < 0 || RangoSeguridad > 100)
+            {
+                throw new EstadoConservacionException("El Rango de seguridad debe estar entre 0 y 100");
+            }
             throw new NotImplementedException();
         }
     }
