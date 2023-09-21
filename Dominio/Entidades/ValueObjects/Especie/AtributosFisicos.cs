@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dominio.ExcepcionesEntidades;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,22 @@ namespace Dominio.Entidades.ValueObjects.Especie
     {
         public decimal RangoPesoKg { get; }
         public decimal RangoLongitudCm { get; }
+
+        public AtributosFisicos()
+        {
+            Validar();
+        }
+
+        private void Validar()
+        {
+            if (RangoPesoKg <= 0)
+            {
+                throw new EspecieException("Las magnitudes deben ser positivas");
+            }
+            if(RangoLongitudCm <= 0)
+            {
+                throw new EspecieException("Las magnitudes deben ser positivas");
+            }
+        }
     }
 }
