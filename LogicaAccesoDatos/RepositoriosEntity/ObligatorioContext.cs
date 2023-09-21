@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicaAccesoDatos
+namespace LogicaAccesoDatos.RepositoriosEntity
 {
-    public class ObligatorioContext:DbContext
+    public class ObligatorioContext : DbContext
     {
         public DbSet<Amenaza> Amenazas { get; set; }
         public DbSet<Especie> Especies { get; set; }
