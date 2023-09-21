@@ -1,4 +1,5 @@
 ﻿using Dominio.Entidades.ValueObjects.Especie;
+using Dominio.ExcepcionesEntidades;
 using Dominio.InterfacesEntidades;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,10 @@ namespace Dominio.Entidades
         public int EstadoConservacionId { get; set; }
         public void Validar()
         {
-            throw new NotImplementedException();
+            if (String.IsNullOrEmpty(Descripcion))
+            {
+                throw new EspecieException("La descripción no puede ser vacía");
+            }
         }
     }
 }

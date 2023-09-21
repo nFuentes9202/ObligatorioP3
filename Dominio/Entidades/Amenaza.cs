@@ -22,7 +22,10 @@ namespace Dominio.Entidades
             {
                 throw new AmenazaException("El grado de peligrosidad debe ser entre 1 y 10");
             }
-            throw new NotImplementedException();
+            if (String.IsNullOrEmpty(Descripcion))
+            {
+                throw new AmenazaException("La descripcion no puede ser vacía");
+            }
         }
     }
 }

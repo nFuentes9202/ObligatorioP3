@@ -1,4 +1,5 @@
 ﻿using Dominio.Entidades.ValueObjects.Ecosistema;
+using Dominio.ExcepcionesEntidades;
 using Dominio.InterfacesEntidades;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,7 +26,18 @@ namespace Dominio.Entidades
         public int EstadoConservacionId { get; set; }
         public void Validar()
         {
-            throw new NotImplementedException();
+            if (String.IsNullOrEmpty(Nombre))
+            {
+                throw new EcosistemaException("El nombre no puede ser vacío");
+            }
+            if(AreaMetrosCuadrados <= 0)
+            {
+                throw new EcosistemaException("El area en metros cuadrados debe ser mayor a 0");
+            }
+            if (String.IsNullOrEmpty(Descripcion))
+            {
+                throw new EcosistemaException("La descripción no puede ser vacía");
+            }
         }
     }
 }
