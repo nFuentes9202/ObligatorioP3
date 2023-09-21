@@ -11,11 +11,18 @@ namespace Dominio.Entidades.ValueObjects.Especie
     [Owned]
     public class Imagen
     {
-        public string Descripcion { get; }
-        public string Nombre { get; }
+        public string Descripcion { get; private set; }
+        public string Nombre { get; private set; }
 
         public Imagen()
         {
+            Validar();
+        }
+
+        public Imagen(string descripcion, string nombre)
+        {
+            Descripcion = descripcion;
+            Nombre = nombre;
             Validar();
         }
 

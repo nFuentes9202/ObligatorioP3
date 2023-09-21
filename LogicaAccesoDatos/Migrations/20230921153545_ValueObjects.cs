@@ -5,7 +5,7 @@
 namespace LogicaAccesoDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class ValueObjects : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +31,8 @@ namespace LogicaAccesoDatos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RangoSeguridad = table.Column<int>(type: "int", nullable: false)
+                    RangoSeguridadMinimo = table.Column<int>(type: "int", nullable: false),
+                    RangoSeguridadMaximo = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,7 +46,7 @@ namespace LogicaAccesoDatos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CodigoAlpha3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nombre = table.Column<int>(type: "int", nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,6 +62,8 @@ namespace LogicaAccesoDatos.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AreaMetrosCuadrados = table.Column<double>(type: "float", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Coordenadas_Latitud = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Coordenadas_Longitud = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     EstadoConservacionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

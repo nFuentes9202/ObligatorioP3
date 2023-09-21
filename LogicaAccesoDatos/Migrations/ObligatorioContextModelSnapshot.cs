@@ -134,7 +134,10 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RangoSeguridad")
+                    b.Property<int>("RangoSeguridadMaximo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RangoSeguridadMinimo")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -154,8 +157,9 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Nombre")
-                        .HasColumnType("int");
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -254,6 +258,14 @@ namespace LogicaAccesoDatos.Migrations
                             b1.Property<int>("EcosistemaId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("Descripcion")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Nombre")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
                             b1.HasKey("EcosistemaId");
 
                             b1.ToTable("Ecosistemas");
@@ -284,6 +296,12 @@ namespace LogicaAccesoDatos.Migrations
                             b1.Property<int>("EspecieId")
                                 .HasColumnType("int");
 
+                            b1.Property<decimal>("RangoLongitudCm")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<decimal>("RangoPesoKg")
+                                .HasColumnType("decimal(18,2)");
+
                             b1.HasKey("EspecieId");
 
                             b1.ToTable("Especies");
@@ -297,6 +315,14 @@ namespace LogicaAccesoDatos.Migrations
                             b1.Property<int>("EspecieId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("Descripcion")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Nombre")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
                             b1.HasKey("EspecieId");
 
                             b1.ToTable("Especies");
@@ -309,6 +335,14 @@ namespace LogicaAccesoDatos.Migrations
                         {
                             b1.Property<int>("EspecieId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("NombreCientifico")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("NombreVulgar")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("EspecieId");
 

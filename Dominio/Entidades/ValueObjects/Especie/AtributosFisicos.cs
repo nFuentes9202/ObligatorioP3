@@ -11,11 +11,18 @@ namespace Dominio.Entidades.ValueObjects.Especie
     [Owned]
     public class AtributosFisicos
     {
-        public decimal RangoPesoKg { get; }
-        public decimal RangoLongitudCm { get; }
+        public decimal RangoPesoKg { get; private set; }
+        public decimal RangoLongitudCm { get; private set; }
 
         public AtributosFisicos()
         {
+            Validar();
+        }
+
+        public AtributosFisicos(decimal rangoPesoKg, decimal rangoLongitudCm)
+        {
+            RangoPesoKg = rangoPesoKg;
+            RangoLongitudCm = rangoLongitudCm;
             Validar();
         }
 

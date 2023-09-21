@@ -16,8 +16,15 @@ namespace Dominio.Entidades.ValueObjects.Ecosistema
             Validar();
         }
 
-        public string Descripcion { get; }
-        public string Nombre { get; }
+        public Imagen(string descripcion, string nombre)
+        {
+            Descripcion = descripcion;
+            Nombre = nombre;
+            Validar();
+        }
+
+        public string Descripcion { get; private set; }
+        public string Nombre { get; private set; }
         private void Validar()
         {
             if (String.IsNullOrEmpty(Descripcion))

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(ObligatorioContext))]
-    [Migration("20230919215423_Inicial")]
-    partial class Inicial
+    [Migration("20230921153741_ValueObjects1")]
+    partial class ValueObjects1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,7 +137,10 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RangoSeguridad")
+                    b.Property<int>("RangoSeguridadMaximo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RangoSeguridadMinimo")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -157,8 +160,9 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Nombre")
-                        .HasColumnType("int");
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -238,6 +242,12 @@ namespace LogicaAccesoDatos.Migrations
                             b1.Property<int>("EcosistemaId")
                                 .HasColumnType("int");
 
+                            b1.Property<decimal>("Latitud")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<decimal>("Longitud")
+                                .HasColumnType("decimal(18,2)");
+
                             b1.HasKey("EcosistemaId");
 
                             b1.ToTable("Ecosistemas");
@@ -250,6 +260,14 @@ namespace LogicaAccesoDatos.Migrations
                         {
                             b1.Property<int>("EcosistemaId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("Descripcion")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Nombre")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("EcosistemaId");
 
@@ -281,6 +299,12 @@ namespace LogicaAccesoDatos.Migrations
                             b1.Property<int>("EspecieId")
                                 .HasColumnType("int");
 
+                            b1.Property<decimal>("RangoLongitudCm")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<decimal>("RangoPesoKg")
+                                .HasColumnType("decimal(18,2)");
+
                             b1.HasKey("EspecieId");
 
                             b1.ToTable("Especies");
@@ -294,6 +318,14 @@ namespace LogicaAccesoDatos.Migrations
                             b1.Property<int>("EspecieId")
                                 .HasColumnType("int");
 
+                            b1.Property<string>("Descripcion")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Nombre")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
                             b1.HasKey("EspecieId");
 
                             b1.ToTable("Especies");
@@ -306,6 +338,14 @@ namespace LogicaAccesoDatos.Migrations
                         {
                             b1.Property<int>("EspecieId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("NombreCientifico")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("NombreVulgar")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("EspecieId");
 

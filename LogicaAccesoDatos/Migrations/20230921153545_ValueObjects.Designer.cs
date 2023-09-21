@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(ObligatorioContext))]
-    [Migration("20230919220425_Inicial1")]
-    partial class Inicial1
+    [Migration("20230921153545_ValueObjects")]
+    partial class ValueObjects
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,7 +137,10 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RangoSeguridad")
+                    b.Property<int>("RangoSeguridadMaximo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RangoSeguridadMinimo")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -157,8 +160,9 @@ namespace LogicaAccesoDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Nombre")
-                        .HasColumnType("int");
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
