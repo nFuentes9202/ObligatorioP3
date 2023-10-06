@@ -35,7 +35,7 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public IEnumerable<Ecosistema> GetAll()
         {
-            throw new NotImplementedException();
+            return _db.Ecosistemas.ToList();
         }
 
         public void Update(Ecosistema obj)
