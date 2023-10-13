@@ -1,0 +1,28 @@
+﻿@*@section Scripts{
+    <script src="/js/Autorizacion/Login.js"></script>
+}
+<link rel="stylesheet" href="~/css/Autorizacion/Login.css" asp-append-version="true" />*@
+
+<main class="form-signin h-auto m-auto">
+    <form method="post" id="formLogin">
+
+        <h1 class="h3 mb-3 fw-normal">Inicie sesión</h1>
+
+        <div class="form-floating">
+            <input value="rbonilla@mimail.com" name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating">
+            <input value="768524121" name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+
+        <button class="btn btn-primary w-100 py-2" type="submit">Login</button>
+        <p id="pLogin"></p>
+        <p>@ViewBag.MensajeLogin</p>
+    </form>
+    <div class="cosas">
+    </div>
+
+
+</main>
