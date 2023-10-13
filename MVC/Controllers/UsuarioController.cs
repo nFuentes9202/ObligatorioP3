@@ -1,5 +1,6 @@
 ﻿using Dominio.InterfacesRepositorio;
 using LogicaAccesoDatos.RepositorioMemoria;
+using LogicaAccesoDatos.RepositoriosEntity;
 using Microsoft.AspNetCore.Mvc;
 using Usuarios.Entidades;
 using Usuarios.InterfacesRepositorio;
@@ -10,7 +11,12 @@ namespace MVC.Controllers
 {
     public class UsuarioController : Controller
     {
-        IRepositorioUsuario _repoUsuario = new RepositorioUsuario();
+        private readonly RepositorioUsuario _repoUsuario;
+
+        public UsuarioController(RepositorioUsuario repoUsuario)
+        {
+            _repoUsuario = repoUsuario;
+        }
 
         public IActionResult Login()
         {

@@ -13,20 +13,20 @@ namespace Dominio.Entidades.ValueObjects.Ecosistema
     {
         public Imagen()
         {
-            Validar();
         }
 
-        public Imagen(string descripcion, string nombre)
+        public Imagen(string descripcion, string nombre, string rutaImagen)
         {
             Descripcion = descripcion;
             Nombre = nombre;
+            RutaImagen = rutaImagen;
             Validar();
         }
 
         public string Descripcion { get; private set; }
         public string Nombre { get; private set; }
 
-        public string? rutaImagen { get; private set; }
+        public string? RutaImagen { get; private set; }
         private void Validar()
         {
             if (String.IsNullOrEmpty(Descripcion))
@@ -37,7 +37,7 @@ namespace Dominio.Entidades.ValueObjects.Ecosistema
             {
                 throw new EcosistemaException("No se puede tener un nombre nulo en una imagén");
             }
-            if (String.IsNullOrEmpty(rutaImagen))
+            if (String.IsNullOrEmpty(RutaImagen))
             {
                 throw new EcosistemaException("La ruta de la imagen no puede ser nula o vacía");
             }

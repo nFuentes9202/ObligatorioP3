@@ -290,7 +290,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "AdminUser",
                             ContraseniaEncriptada = "SomeEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 13, 11, 1, 43, 957, DateTimeKind.Local).AddTicks(2687)
+                            FechaIngreso = new DateTime(2023, 10, 13, 19, 35, 34, 622, DateTimeKind.Local).AddTicks(2379)
                         });
                 });
 
@@ -307,7 +307,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "GeneralUser",
                             ContraseniaEncriptada = "AnotherEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 13, 11, 1, 43, 957, DateTimeKind.Local).AddTicks(2725)
+                            FechaIngreso = new DateTime(2023, 10, 13, 19, 35, 34, 622, DateTimeKind.Local).AddTicks(2413)
                         });
                 });
 
@@ -381,7 +381,7 @@ namespace LogicaAccesoDatos.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("rutaImagen")
+                            b1.Property<string>("RutaImagen")
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("EcosistemaId");

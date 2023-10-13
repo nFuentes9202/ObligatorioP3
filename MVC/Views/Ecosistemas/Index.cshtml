@@ -1,0 +1,45 @@
+﻿@model List<MVC.Models.EcosistemaModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index de Ecosistemas</title>
+    <link rel="stylesheet" type="text/css" href="/css/Ecosistemas/estilos.css">
+</head>
+<body>
+    <h1>Ecosistemas</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Latitud</th>
+                <th>Longitud</th>
+                <th>Área (m²)</th>
+                <th>Estado de Conservación</th>
+                <th>Imagen de ecosistema</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ecosistema in Model)
+            {
+                <tr>
+                    <td>@ecosistema.Id</td>
+                    <td>@ecosistema.Nombre</td>
+                    <td>@ecosistema.Descripcion</td>
+                    <td>@ecosistema.Latitud</td>
+                    <td>@ecosistema.Longitud</td>
+                    <td>@ecosistema.AreaMetrosCuadrados</td>
+                    <td>@ecosistema.EstadoConservacionNombre</td>
+                    <td><img class="img-thumbnail" src="~/imagenes/fotos/@ecosistema.ImagenRuta" /></td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

@@ -11,6 +11,10 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 {
     public class ObligatorioContext : DbContext
     {
+        public ObligatorioContext(DbContextOptions<ObligatorioContext> options)
+       : base(options)
+        {
+        }
         public DbSet<Amenaza> Amenazas { get; set; }
         public DbSet<Especie> Especies { get; set; }
         public DbSet<EstadoConservacion> EstadosConservacion { get; set; }
@@ -37,7 +41,8 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 .HasOne(e => e.EstadoConservacion)
                 .WithMany()
                 .HasForeignKey(e => e.EstadoConservacionId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);  
+
             modelBuilder.Entity<Usuario>()
             .HasDiscriminator<string>("TipoUsuario")
             .HasValue<UsuarioAdmin>("Admin")
@@ -60,6 +65,8 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 new Pais { Id = 1, CodigoAlpha3 = "ARG", Nombre = "Argentina" },
                 new Pais { Id = 2, CodigoAlpha3 = "BRA", Nombre = "Brasil" }
             );
+
+
             modelBuilder.Entity<UsuarioAdmin>().HasData(
         new UsuarioAdmin
         {
@@ -85,6 +92,4 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         }
     }
-    
-
 }

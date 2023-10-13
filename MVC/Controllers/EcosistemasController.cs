@@ -13,13 +13,19 @@ namespace MVC.Controllers
 {
     public class EcosistemasController : Controller
     {
-        RepositorioEcosistema _repoEcosistema = new RepositorioEcosistema();
+        private readonly RepositorioEcosistema _repoEcosistema;
+
+        public EcosistemasController(RepositorioEcosistema repoEcosistema)
+        {
+            _repoEcosistema = repoEcosistema;
+        }
 
         // GET: Ecosistemas
         public ActionResult Index()
         {
             IEnumerable<Ecosistema> _ecosistemas = _repoEcosistema.GetAll();
-            return View(_ecosistemas);
+            var ViewModel = _ecosistemas.Select(e => new EcosistemaModel(e)).ToList(); // Convertir a ViewModel
+            return View(ViewModel);
 
         }
     }

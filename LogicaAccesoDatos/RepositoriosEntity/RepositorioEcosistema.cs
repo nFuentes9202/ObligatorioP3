@@ -1,6 +1,7 @@
 ﻿using Dominio.Entidades;
 using Dominio.ExcepcionesEntidades;
 using Dominio.InterfacesRepositorio;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,12 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 {
     public class RepositorioEcosistema : IRepositorioEcosistema
     {
-        private ObligatorioContext _db = new ObligatorioContext();
+        private ObligatorioContext _db;
+        public RepositorioEcosistema(ObligatorioContext db)
+        {
+            _db = db;
+        }
+
         public void Add(Ecosistema obj)
         {
             if (obj == null)
@@ -35,7 +41,18 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public IEnumerable<Ecosistema> GetAll()
         {
-            return _db.Ecosistemas.ToList();
+            try
+            {
+                return _db.Ecosistemas
+                                       .Include(e => e.EstadoConservacion)
+                                       .ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
 
         public void Update(Ecosistema obj)

@@ -13,8 +13,11 @@ namespace LogicaAccesoDatos.RepositorioMemoria
 {
     public class RepositorioUsuario: IRepositorioUsuario
     {
-        private ObligatorioContext _db = new ObligatorioContext();
-
+        private ObligatorioContext _db;
+        public RepositorioUsuario(ObligatorioContext db)
+        {
+            _db = db;
+        }
         public void Add(Usuario obj)
         {
             try
