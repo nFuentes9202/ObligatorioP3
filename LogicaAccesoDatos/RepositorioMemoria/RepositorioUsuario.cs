@@ -1,4 +1,5 @@
 ﻿using Dominio.InterfacesRepositorio;
+using LogicaAccesoDatos.RepositoriosEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

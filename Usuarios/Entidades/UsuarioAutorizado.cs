@@ -9,6 +9,7 @@ namespace Usuarios.Entidades
 {
     public class UsuarioAutorizado:Usuario, IValidable<UsuarioAutorizado>
     {
+        public UsuarioAutorizado() { }
         public UsuarioAutorizado(string alias, string contraseniasinencriptar) : base(alias,  contraseniasinencriptar)
         {
         }

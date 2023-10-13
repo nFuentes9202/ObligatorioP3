@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace LogicaAccesoDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class ValueObjects : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,6 +55,23 @@ namespace LogicaAccesoDatos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Usuarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Alias = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContraseniaEncriptada = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContraseniaSinEncriptar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaIngreso = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TipoUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ecosistemas",
                 columns: table => new
                 {
@@ -64,6 +82,9 @@ namespace LogicaAccesoDatos.Migrations
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Coordenadas_Latitud = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Coordenadas_Longitud = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Imagen_Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Imagen_Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Imagen_rutaImagen = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EstadoConservacionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -84,6 +105,12 @@ namespace LogicaAccesoDatos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AtributosFisicos_RangoPesoKg = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AtributosFisicos_RangoLongitudCm = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Imagen_Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Imagen_Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombre_NombreCientifico = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombre_NombreVulgar = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EstadoConservacionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -238,6 +265,9 @@ namespace LogicaAccesoDatos.Migrations
 
             migrationBuilder.DropTable(
                 name: "EcosistemaPais");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "Amenazas");
