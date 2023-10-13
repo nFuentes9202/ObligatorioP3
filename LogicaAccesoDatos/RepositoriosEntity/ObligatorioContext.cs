@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Usuarios.Entidades;
 
 namespace LogicaAccesoDatos.RepositoriosEntity
 {
@@ -15,6 +16,7 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         public DbSet<EstadoConservacion> EstadosConservacion { get; set; }
         public DbSet<Pais> Paises { get; set; }
         public DbSet<Ecosistema> Ecosistemas { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
