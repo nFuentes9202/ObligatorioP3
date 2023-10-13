@@ -26,4 +26,9 @@
     <ProjectReference Include="..\Usuarios\Usuarios.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Ecosistemas\" />
+    <Folder Include="wwwroot\imagenes\fotos\" />
+  </ItemGroup>
+
 </Project>
