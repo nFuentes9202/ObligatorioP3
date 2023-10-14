@@ -10,7 +10,7 @@ namespace MVC.Models
         public string Descripcion { get; set; }
         public decimal Latitud { get; set; }
         public decimal Longitud { get; set; }
-        public string ImagenRuta { get; set; }
+        public string? ImagenRuta { get; set; }
 
         [Display(Name = "Descripción de la imagen")]
         public string DescripcionImagen { get; set; }
@@ -21,7 +21,7 @@ namespace MVC.Models
 
         [Display(Name = "Seleccione una amenaza")]
         [Required(ErrorMessage = "La amenaza es requerida.")]
-        public int AmenazaId { get; set; }
+        public IEnumerable<int> AmenazasSeleccionadasIds { get; set; }
         public SelectList TodasLasAmenazas { get; set; }
 
     }

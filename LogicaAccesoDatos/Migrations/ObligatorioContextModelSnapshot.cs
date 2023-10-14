@@ -86,6 +86,41 @@ namespace LogicaAccesoDatos.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Dominio.Entidades.ConfiguracionValidaciones", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("topeMaximoDescripcion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("topeMaximoNombre")
+                        .HasColumnType("int");
+
+                    b.Property<int>("topeMinimoDescripcion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("topeMinimoNombre")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Configuraciones");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            topeMaximoDescripcion = 500,
+                            topeMaximoNombre = 500,
+                            topeMinimoDescripcion = 50,
+                            topeMinimoNombre = 50
+                        });
+                });
+
             modelBuilder.Entity("Dominio.Entidades.Ecosistema", b =>
                 {
                     b.Property<int>("Id")
@@ -290,7 +325,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "AdminUser",
                             ContraseniaEncriptada = "SomeEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 13, 19, 35, 34, 622, DateTimeKind.Local).AddTicks(2379)
+                            FechaIngreso = new DateTime(2023, 10, 14, 6, 24, 38, 452, DateTimeKind.Local).AddTicks(5888)
                         });
                 });
 
@@ -307,7 +342,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "GeneralUser",
                             ContraseniaEncriptada = "AnotherEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 13, 19, 35, 34, 622, DateTimeKind.Local).AddTicks(2413)
+                            FechaIngreso = new DateTime(2023, 10, 14, 6, 24, 38, 452, DateTimeKind.Local).AddTicks(5926)
                         });
                 });
 
@@ -382,6 +417,7 @@ namespace LogicaAccesoDatos.Migrations
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("RutaImagen")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("EcosistemaId");
@@ -438,6 +474,10 @@ namespace LogicaAccesoDatos.Migrations
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Nombre")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("RutaImagen")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 

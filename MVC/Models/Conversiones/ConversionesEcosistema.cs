@@ -18,8 +18,7 @@ namespace MVC.Models.Conversiones
                 Descripcion = ecosistemaAltaModel.Descripcion,
                 Coordenadas = new Dominio.Entidades.ValueObjects.Ecosistema.Coordenadas(ecosistemaAltaModel.Latitud, ecosistemaAltaModel.Longitud),
                 Imagen = new Dominio.Entidades.ValueObjects.Ecosistema.Imagen(ecosistemaAltaModel.Descripcion, ecosistemaAltaModel.Nombre, ecosistemaAltaModel.ImagenRuta),
-                EstadoConservacionId = ecosistemaAltaModel.EstadoConservacionId,
-
+                EstadoConservacionId = ecosistemaAltaModel.EstadoConservacionId
             };
 
         }

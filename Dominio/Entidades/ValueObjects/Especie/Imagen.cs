@@ -14,9 +14,11 @@ namespace Dominio.Entidades.ValueObjects.Especie
         public string Descripcion { get; private set; }
         public string Nombre { get; private set; }
 
+        public string RutaImagen { get; private set; }
+
         public Imagen()
         {
-            Validar();
+ 
         }
 
         public Imagen(string descripcion, string nombre)

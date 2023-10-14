@@ -21,12 +21,9 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         public DbSet<Pais> Paises { get; set; }
         public DbSet<Ecosistema> Ecosistemas { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<ConfiguracionValidaciones> Configuraciones{get;set;}
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            string cadenaConexion = @"SERVER=(LocalDb)\MsSqlLocalDb;DATABASE=ObligatorioP3";
-            optionsBuilder.UseSqlServer(cadenaConexion);
-        }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configuración para Especie
@@ -89,7 +86,16 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                     FechaIngreso = DateTime.Now
                 }
             );
-
+            modelBuilder.Entity<ConfiguracionValidaciones>().HasData(
+                new ConfiguracionValidaciones
+                {
+                    Id = 1,
+                    topeMaximoDescripcion = 500,
+                    topeMaximoNombre = 500,
+                    topeMinimoDescripcion = 50,
+                    topeMinimoNombre = 50
+                }
+            );
         }
     }
 }

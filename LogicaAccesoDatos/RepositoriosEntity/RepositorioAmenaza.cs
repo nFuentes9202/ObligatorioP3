@@ -45,6 +45,11 @@ namespace LogicaAccesoDatos.RepositoriosEntity
             }
         }
 
+        public IEnumerable<Amenaza> ObtenerAmenazasSegunId(IEnumerable<int> amenazasSeleccionadasIds)
+        {
+            return _db.Amenazas.Where(a => amenazasSeleccionadasIds.Contains(a.Id)).ToList();
+        }
+
         public void Update(Amenaza obj)
         {
             throw new NotImplementedException();

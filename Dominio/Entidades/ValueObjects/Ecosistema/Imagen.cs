@@ -26,7 +26,7 @@ namespace Dominio.Entidades.ValueObjects.Ecosistema
         public string Descripcion { get; private set; }
         public string Nombre { get; private set; }
 
-        public string? RutaImagen { get; private set; }
+        public string RutaImagen { get; private set; }
         private void Validar()
         {
             if (String.IsNullOrEmpty(Descripcion))

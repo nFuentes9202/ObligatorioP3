@@ -82,7 +82,9 @@ namespace MVC.Controllers
 
                 if (GuardarImagen(imagen, ecosistemaModel))
                 {
+                    IEnumerable<Amenaza> amenazas = _repoAmenaza.ObtenerAmenazasSegunId(ecosistemaModel.AmenazasSeleccionadasIds);
                     Ecosistema eco = ConversionesEcosistema.ModeloToEcosistema(ecosistemaModel);
+                    eco.Amenazas = amenazas.ToList();
                     _repoEcosistema.Add(eco);
                     return View("Visualizar",ecosistemaModel);
                 }

@@ -59,5 +59,6 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         {
             throw new NotImplementedException();
         }
+        
     }
 }
