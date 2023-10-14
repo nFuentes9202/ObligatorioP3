@@ -37,10 +37,7 @@ namespace Dominio.Entidades.ValueObjects.Ecosistema
             {
                 throw new EcosistemaException("No se puede tener un nombre nulo en una imagén");
             }
-            if (String.IsNullOrEmpty(RutaImagen))
-            {
-                throw new EcosistemaException("La ruta de la imagen no puede ser nula o vacía");
-            }
+
         }
     }
 }

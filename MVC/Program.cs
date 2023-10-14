@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddScoped<RepositorioEcosistema>();
+builder.Services.AddScoped<RepositorioAmenaza>();
+builder.Services.AddScoped<RepositorioEstadosConservacion>();
 builder.Services.AddDbContext<ObligatorioContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StringConexion")));
 var app = builder.Build();

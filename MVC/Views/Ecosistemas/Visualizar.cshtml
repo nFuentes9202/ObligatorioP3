@@ -1,0 +1,27 @@
+﻿@model MVC.Models.EcosistemaAltaModel
+@{
+    ViewData["Title"] = "Visualizar";
+}
+<div>
+    <h4>Visualización de la imagen del ecosistema</h4>
+    <h3 class="align-content-sm-center">
+        ¡Qué lindo ecosistema!
+    </h3>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(model => model.DescripcionImagen)
+        </dt>
+        <dd class="col-sm-10">
+            <img class="img-thumbnail" src="~/imagenes/fotos/@Model.ImagenRuta" />
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Inicio</a>
+</div>

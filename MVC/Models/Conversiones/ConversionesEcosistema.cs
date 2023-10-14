@@ -8,5 +8,20 @@ namespace MVC.Models.Conversiones
         {
             return new Models.EcosistemaModel(ecosis);
         }
+
+        internal static Ecosistema ModeloToEcosistema(EcosistemaAltaModel ecosistemaAltaModel)
+        {
+            return new Ecosistema
+            {
+                Nombre = ecosistemaAltaModel.Nombre,
+                AreaMetrosCuadrados = ecosistemaAltaModel.AreaMetrosCuadrados,
+                Descripcion = ecosistemaAltaModel.Descripcion,
+                Coordenadas = new Dominio.Entidades.ValueObjects.Ecosistema.Coordenadas(ecosistemaAltaModel.Latitud, ecosistemaAltaModel.Longitud),
+                Imagen = new Dominio.Entidades.ValueObjects.Ecosistema.Imagen(ecosistemaAltaModel.Descripcion, ecosistemaAltaModel.Nombre, ecosistemaAltaModel.ImagenRuta),
+                EstadoConservacionId = ecosistemaAltaModel.EstadoConservacionId,
+
+            };
+
+        }
     }
 }
