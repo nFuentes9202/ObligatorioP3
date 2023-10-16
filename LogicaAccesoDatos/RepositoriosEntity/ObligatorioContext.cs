@@ -90,10 +90,10 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 new ConfiguracionValidaciones
                 {
                     Id = 1,
-                    topeMaximoDescripcion = 500,
-                    topeMaximoNombre = 500,
-                    topeMinimoDescripcion = 50,
-                    topeMinimoNombre = 50
+                    TopeMaximoDescripcion = 500,
+                    TopeMaximoNombre = 500,
+                    TopeMinimoDescripcion = 50,
+                    TopeMinimoNombre = 50
                 }
             );
         }
