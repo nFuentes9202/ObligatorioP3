@@ -325,7 +325,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "AdminUser",
                             ContraseniaEncriptada = "SomeEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 14, 6, 24, 38, 452, DateTimeKind.Local).AddTicks(5888)
+                            FechaIngreso = new DateTime(2023, 10, 16, 17, 2, 20, 210, DateTimeKind.Local).AddTicks(7411)
                         });
                 });
 
@@ -342,7 +342,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "GeneralUser",
                             ContraseniaEncriptada = "AnotherEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 14, 6, 24, 38, 452, DateTimeKind.Local).AddTicks(5926)
+                            FechaIngreso = new DateTime(2023, 10, 16, 17, 2, 20, 210, DateTimeKind.Local).AddTicks(7443)
                         });
                 });
 

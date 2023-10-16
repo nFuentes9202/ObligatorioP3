@@ -1,5 +1,4 @@
 ﻿using Dominio.InterfacesRepositorio;
-using LogicaAccesoDatos.RepositoriosEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,9 @@ using Usuarios.Entidades;
 using Usuarios.ExcepcionesUsuarios;
 using Usuarios.InterfacesRepositorio;
 
-namespace LogicaAccesoDatos.RepositorioMemoria
+namespace LogicaAccesoDatos.RepositoriosEntity
 {
-    public class RepositorioUsuario: IRepositorioUsuario
+    public class RepositorioUsuario : IRepositorioUsuario
     {
         private ObligatorioContext _db;
         public RepositorioUsuario(ObligatorioContext db)
@@ -22,14 +21,15 @@ namespace LogicaAccesoDatos.RepositorioMemoria
         {
             try
             {
-                if(obj==null)
+                if (obj == null)
                     throw new UsuarioException("El usuario no puede ser nulo");
                 obj.Validar();
                 obj.Id = 0;
                 _db.Usuarios.Add(obj);
                 _db.SaveChanges();
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new UsuarioException($"Error al agregar el usuario {ex.Message}", ex);
             }
@@ -37,7 +37,7 @@ namespace LogicaAccesoDatos.RepositorioMemoria
 
         public void Delete(Usuario obj)
         {
-            if(obj==null)
+            if (obj == null)
                 throw new UsuarioException("El usuario no puede ser nulo");
             try
             {
@@ -70,7 +70,7 @@ namespace LogicaAccesoDatos.RepositorioMemoria
             try
             {
                 Usuario usuario = _db.Usuarios.FirstOrDefault(u => u.Alias == alias && u.ContraseniaSinEncriptar == password);
-                if(usuario == null)
+                if (usuario == null)
                     throw new UsuarioException("El usuario no existe");
                 return usuario;
             }

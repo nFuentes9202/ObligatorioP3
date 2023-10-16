@@ -1,5 +1,4 @@
 ﻿using Dominio.InterfacesRepositorio;
-using LogicaAccesoDatos.RepositorioMemoria;
 using LogicaAccesoDatos.RepositoriosEntity;
 using Microsoft.AspNetCore.Mvc;
 using Usuarios.Entidades;

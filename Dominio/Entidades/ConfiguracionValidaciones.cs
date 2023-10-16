@@ -11,10 +11,10 @@ namespace Dominio.Entidades
     public class ConfiguracionValidaciones
     {
         public int Id { get; set; }
-        public int topeMinimoDescripcion {  get; private set; }
-        public int topeMaximoDescripcion { get; private set; }
-        public int topeMinimoNombre{ get; private set; }
-        public int topeMaximoNombre { get; private set; }
+        public int topeMinimoDescripcion {  get; set; }
+        public int topeMaximoDescripcion { get; set; }
+        public int topeMinimoNombre{ get; set; }
+        public int topeMaximoNombre { get; set; }
 
         public ConfiguracionValidaciones()
         {
