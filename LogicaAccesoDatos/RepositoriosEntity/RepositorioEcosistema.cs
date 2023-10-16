@@ -33,6 +33,26 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         {
             throw new NotImplementedException();
         }
+        public bool Delete(int id)
+        {
+            try
+            {
+                var Ecosistema = _db.Ecosistemas.Find(id);
+                if (Ecosistema == null)
+                {
+                    return false;
+                }
+                _db.Ecosistemas.Remove(Ecosistema);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+        }
 
         public Ecosistema FindById(int? id)
         {
@@ -59,6 +79,14 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         {
             throw new NotImplementedException();
         }
-        
+        public bool SePuedeBorrarEcosistema(int id)
+        {
+            var ecosistema = _db.Ecosistemas.Include(e => e.Especies).FirstOrDefault(e => e.Id == id);
+            if (ecosistema.Especies.Count == 0)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

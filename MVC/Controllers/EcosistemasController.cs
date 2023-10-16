@@ -98,33 +98,72 @@ namespace MVC.Controllers
         }
         private bool GuardarImagen(IFormFile imagen, EcosistemaAltaModel eco)
         {
-            if (imagen == null || eco == null) return false;
-            // SUBIR LA IMAGEN
-            //ruta física de wwwroot
-            string rutaFisicaWwwRoot = _environment.WebRootPath;
-
-            string nombreImagen = imagen.FileName;
-            //ruta donde se guardan las fotos de las personas
-            string rutaFisicaFoto = Path.Combine
-            (rutaFisicaWwwRoot, "imagenes", "fotos", nombreImagen);
-            //FileStream permite manejar archivos
             try
             {
-                //el método using libera los recursos del objeto FileStream al finalizar
-                using (FileStream f = new FileStream(rutaFisicaFoto, FileMode.Create))
+                if (imagen == null || eco == null) return false;
+                // SUBIR LA IMAGEN
+                //ruta física de wwwroot
+                string rutaFisicaWwwRoot = _environment.WebRootPath;
+
+                string nombreImagen = imagen.FileName;
+                //ruta donde se guardan las fotos de las personas
+                string rutaFisicaFoto = Path.Combine
+                (rutaFisicaWwwRoot, "imagenes", "fotos", nombreImagen);
+                //FileStream permite manejar archivos
+                try
                 {
-                    //Para archivos grandes o varios archivos usar la versión
-                    //asincrónica de CopyTo. Sería: await imagen.CopyToAsync (f);
-                    imagen.CopyTo(f);
+                    //el método using libera los recursos del objeto FileStream al finalizar
+                    using (FileStream f = new FileStream(rutaFisicaFoto, FileMode.Create))
+                    {
+                        //Para archivos grandes o varios archivos usar la versión
+                        //asincrónica de CopyTo. Sería: await imagen.CopyToAsync (f);
+                        imagen.CopyTo(f);
+                    }
+                    //GUARDAR EL NOMBRE DE LA IMAGEN SUBIDA EN EL OBJETO
+                    eco.ImagenRuta = nombreImagen;
+                    return true;
                 }
-                //GUARDAR EL NOMBRE DE LA IMAGEN SUBIDA EN EL OBJETO
-                eco.ImagenRuta = nombreImagen;
-                return true;
+                catch (Exception ex)
+                {
+                    return false;
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return false;
+
+                throw;
             }
+            
+        }
+
+        public IActionResult Borrar(int id)
+        {
+            try
+            {
+                if (HttpContext.Session.GetInt32("LogueadoId") == null)
+                {
+                    return Unauthorized(); // No autorizado
+                }
+
+                if (_repoEcosistema.SePuedeBorrarEcosistema(id))
+                {
+                    _repoEcosistema.Delete(id);
+                    TempData["Feedback"] = "¡Ecosistema borrado exitosamente!";
+                }
+                else
+                {
+                    // Si el ecosistema es habitado, redirige con un mensaje de error
+                    TempData["Feedback"] = "El ecosistema no puede ser borrado porque es habitado por especies.";
+
+                }
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
     }
 }

@@ -62,5 +62,6 @@ namespace MVC.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
+
     }
 }
