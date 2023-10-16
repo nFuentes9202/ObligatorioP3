@@ -20,13 +20,22 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public void Add(Ecosistema obj)
         {
-            if (obj == null)
+            try
             {
-                throw new EcosistemaException("El ecosistema no puede ser nulo");
+                if (obj == null)
+                {
+                    throw new EcosistemaException("El ecosistema no puede ser nulo");
+                }
+                obj.Validar();
+                _db.Ecosistemas.Add(obj);
+                _db.SaveChanges();
             }
-            obj.Validar();
-            _db.Ecosistemas.Add(obj);
-            _db.SaveChanges();
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
 
         public void Delete(Ecosistema obj)

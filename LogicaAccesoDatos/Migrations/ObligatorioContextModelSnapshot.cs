@@ -94,16 +94,16 @@ namespace LogicaAccesoDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("topeMaximoDescripcion")
+                    b.Property<int>("TopeMaximoDescripcion")
                         .HasColumnType("int");
 
-                    b.Property<int>("topeMaximoNombre")
+                    b.Property<int>("TopeMaximoNombre")
                         .HasColumnType("int");
 
-                    b.Property<int>("topeMinimoDescripcion")
+                    b.Property<int>("TopeMinimoDescripcion")
                         .HasColumnType("int");
 
-                    b.Property<int>("topeMinimoNombre")
+                    b.Property<int>("TopeMinimoNombre")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -114,10 +114,10 @@ namespace LogicaAccesoDatos.Migrations
                         new
                         {
                             Id = 1,
-                            topeMaximoDescripcion = 500,
-                            topeMaximoNombre = 500,
-                            topeMinimoDescripcion = 50,
-                            topeMinimoNombre = 50
+                            TopeMaximoDescripcion = 500,
+                            TopeMaximoNombre = 500,
+                            TopeMinimoDescripcion = 50,
+                            TopeMinimoNombre = 50
                         });
                 });
 
@@ -141,11 +141,14 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EstadoConservacionId");
+
+                    b.HasIndex("Nombre")
+                        .IsUnique();
 
                     b.ToTable("Ecosistemas");
                 });
@@ -221,13 +224,16 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.Property<string>("CodigoAlpha3")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CodigoAlpha3")
+                        .IsUnique();
 
                     b.ToTable("Paises");
 
@@ -325,7 +331,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "AdminUser",
                             ContraseniaEncriptada = "SomeEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 16, 17, 2, 20, 210, DateTimeKind.Local).AddTicks(7411)
+                            FechaIngreso = new DateTime(2023, 10, 16, 19, 28, 46, 96, DateTimeKind.Local).AddTicks(1699)
                         });
                 });
 
@@ -342,7 +348,7 @@ namespace LogicaAccesoDatos.Migrations
                             Alias = "GeneralUser",
                             ContraseniaEncriptada = "AnotherEncryptedPassword",
                             ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 16, 17, 2, 20, 210, DateTimeKind.Local).AddTicks(7443)
+                            FechaIngreso = new DateTime(2023, 10, 16, 19, 28, 46, 96, DateTimeKind.Local).AddTicks(1740)
                         });
                 });
 

@@ -9,6 +9,7 @@ using Dominio.Entidades;
 using LogicaAccesoDatos.RepositoriosEntity;
 using MVC.Models;
 using MVC.Models.Conversiones;
+using Microsoft.Data.SqlClient;
 
 namespace MVC.Controllers
 {
@@ -19,13 +20,15 @@ namespace MVC.Controllers
         private readonly RepositorioAmenaza _repoAmenaza;
         private IWebHostEnvironment _environment;
         private readonly RepositorioEstadosConservacion _repoEstadosConservacion;
+        private readonly RepositorioPais _repoPaises;
 
-        public EcosistemasController(RepositorioEcosistema repoEcosistema, RepositorioAmenaza repoAmenaza, IWebHostEnvironment environment, RepositorioEstadosConservacion repositorioEstadosConservacion)
+        public EcosistemasController(RepositorioEcosistema repoEcosistema, RepositorioAmenaza repoAmenaza, IWebHostEnvironment environment, RepositorioEstadosConservacion repositorioEstadosConservacion, RepositorioPais repoPais)
         {
             _repoEcosistema = repoEcosistema;
             _repoAmenaza = repoAmenaza;
             _environment = environment;
             _repoEstadosConservacion = repositorioEstadosConservacion;
+            _repoPaises = repoPais;
         }
 
         // GET: Ecosistemas
@@ -45,15 +48,25 @@ namespace MVC.Controllers
             }
             IEnumerable<AmenazaModel> amenazasModel = LlenarAmenazas();
             IEnumerable<EstadoConservacionModel> estadosModel = LlenarEstadosConservacion();
+            IEnumerable<PaisModel> paisesModel = LlenarPaises();
             SelectList amenazs = new SelectList(amenazasModel, "Id", "Descripcion");
             SelectList estados = new SelectList(estadosModel, "Id", "Nombre");
+            SelectList paises = new SelectList(paisesModel, "Id", "Nombre");
             EcosistemaAltaModel ecosistemaAltaModel = new EcosistemaAltaModel()
             {
                 TodasLasAmenazas = amenazs,
-                TodosLosEstadosConservacion = estados
+                TodosLosEstadosConservacion = estados,
+                TodosLosPaises = paises
             };
 
             return View(ecosistemaAltaModel);
+        }
+
+        private IEnumerable<PaisModel> LlenarPaises()
+        {
+            IEnumerable<Pais> paises = _repoPaises.GetAll();
+            IEnumerable<PaisModel> paisesModel = ConversionesPais.FromLista(paises);
+            return paisesModel;
         }
 
         private IEnumerable<AmenazaModel> LlenarAmenazas()
@@ -83,17 +96,25 @@ namespace MVC.Controllers
                 if (GuardarImagen(imagen, ecosistemaModel))
                 {
                     IEnumerable<Amenaza> amenazas = _repoAmenaza.ObtenerAmenazasSegunId(ecosistemaModel.AmenazasSeleccionadasIds);
+                    IEnumerable<Pais> paises = _repoPaises.ObtenerPaisesSegunId(ecosistemaModel.PaisId);
                     Ecosistema eco = ConversionesEcosistema.ModeloToEcosistema(ecosistemaModel);
                     eco.Amenazas = amenazas.ToList();
+                    eco.Paises = paises.ToList();
                     _repoEcosistema.Add(eco);
                     return View("Visualizar",ecosistemaModel);
                 }
                 return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch(DbUpdateException excep)
             {
-
-                throw;
+                TempData["Error"] = excep.InnerException.Message;
+                return RedirectToAction("Create");
+            }
+            catch (Exception e)
+            {
+                Type tipoExcepcion = e.GetType();
+                TempData["Error"] = e.Message;
+                return RedirectToAction("Create");
             }
         }
         private bool GuardarImagen(IFormFile imagen, EcosistemaAltaModel eco)
