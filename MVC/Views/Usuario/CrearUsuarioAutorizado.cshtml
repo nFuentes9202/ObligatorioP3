@@ -13,7 +13,6 @@
 
 <h1>CrearUsuarioAutorizado</h1>
 
-<h4>UsuarioAutorizado</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -28,7 +27,7 @@
 
             <div class="form-group">
                 <label asp-for="ContraseniaSinEncriptar" class="control-label"></label>
-                <input asp-for="ContraseniaSinEncriptar" class="form-control" id="password" type="password" />
+                <input asp-for="ContraseniaSinEncriptar" class="form-control" id="password" type="password" name="password"/>
                 <span asp-validation-for="ContraseniaSinEncriptar" class="text-danger"></span>
             </div>
 

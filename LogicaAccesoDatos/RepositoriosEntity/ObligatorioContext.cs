@@ -83,7 +83,7 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                     Id = 2,
                     Alias = "AutorizedUser",
                     ContraseniaEncriptada = "Ys5BozLZg7Z9gBEgYB2VZgb9UaR3Mb45quOjqu0Bv3c=",
-                    ContraseniaSinEncriptar = "autorizado1",
+                    ContraseniaSinEncriptar = "autorizado.1",
                     FechaIngreso = new DateTime(2023, 10, 17, 12, 9, 26, 175, DateTimeKind.Local).AddTicks(2443),
                     TipoUsuario = "Autorizado"
                 }

@@ -16,7 +16,7 @@ namespace Usuarios.Entidades
         public int Id { get; set; }
         [Required(ErrorMessage = "El alias no puede ser vacío")]
         [MinLength(6, ErrorMessage = "El nombre debe tener 6 caracteres como mínimo")]
-        public string Alias { get; set; }//debe ser unico
+        public string Alias { get; set; }
         [Required(ErrorMessage = "La contraseña no puede ser vacía")]
         [MinLength(8, ErrorMessage = "La contraseña debe tener 8 caracteres como mínimo")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.,;:#\!]).+$", ErrorMessage = "La contraseña debe incluir al menos una mayúscula, una minúscula, un dígito y un carácter de puntuación (. , ; : # !)")]
@@ -26,7 +26,7 @@ namespace Usuarios.Entidades
         public string TipoUsuario { get; set; }
 
         #endregion
-        protected Usuario() { }
+        public Usuario() { }
 
         public Usuario(string alias, string contraseniasinencriptar)
         {
