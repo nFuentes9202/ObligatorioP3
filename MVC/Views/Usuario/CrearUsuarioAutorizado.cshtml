@@ -1,0 +1,51 @@
+﻿@section Scripts {
+    @*@{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }*@
+    <script src="/js/Usuario/CrearUsuarioAutorizado.js"></script>
+}
+
+@model Usuarios.Entidades.UsuarioAutorizado
+
+@{
+    ViewData["Title"] = "CrearUsuarioAutorizado";
+}
+
+<h1>CrearUsuarioAutorizado</h1>
+
+<h4>UsuarioAutorizado</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CrearUsuarioAutorizado" id="formCreateAutorizado">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Alias" class="control-label"></label>
+                <input asp-for="Alias" class="form-control" id="alias"/>
+                <span asp-validation-for="Alias" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ContraseniaSinEncriptar" class="control-label"></label>
+                <input asp-for="ContraseniaSinEncriptar" class="form-control" id="password" type="password"/>
+                <span asp-validation-for="ContraseniaSinEncriptar" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="ConfirmacionContrasenia" class="control-label">Confirmar Contraseña</label>
+                <input type="password" id="ConfirmacionContrasenia" name="ConfirmacionContrasenia" class="form-control">
+                <p id="pConfirmacionTiempoReal" class="text-success"></p>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            <p id="pCrearUsu"></p>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

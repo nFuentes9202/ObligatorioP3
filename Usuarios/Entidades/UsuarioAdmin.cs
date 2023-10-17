@@ -14,17 +14,6 @@ namespace Usuarios.Entidades
         {
         }
 
-
-
-        public override string EncriptarContraseña(string contraseniasinencriptar)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Validar()
-        {
-            base.Validar();
-        }
         //me parece que va a servir el subsistema solo para UsuarioAdminController y de ahi hacer los create UsuarioAutorizado
         //pero no me termina de convencer
     }

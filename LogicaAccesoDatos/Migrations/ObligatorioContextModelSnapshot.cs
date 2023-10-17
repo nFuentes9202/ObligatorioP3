@@ -289,7 +289,6 @@ namespace LogicaAccesoDatos.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContraseniaEncriptada")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ContraseniaSinEncriptar")
@@ -322,10 +321,11 @@ namespace LogicaAccesoDatos.Migrations
                         new
                         {
                             Id = 1,
-                            Alias = "AdminUser",
-                            ContraseniaEncriptada = "SomeEncryptedPassword",
-                            ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 16, 17, 2, 20, 210, DateTimeKind.Local).AddTicks(7411)
+                            Alias = "admin1",
+                            ContraseniaEncriptada = "RhWlBpJgE9IiOByk/rEDa96FJj9C3U1xWQxrtPbUG2w=",
+                            ContraseniaSinEncriptar = "Admin.12",
+                            FechaIngreso = new DateTime(2023, 10, 17, 12, 9, 26, 175, DateTimeKind.Local).AddTicks(2410),
+                            TipoUsuario = "Admin"
                         });
                 });
 
@@ -339,10 +339,11 @@ namespace LogicaAccesoDatos.Migrations
                         new
                         {
                             Id = 2,
-                            Alias = "GeneralUser",
-                            ContraseniaEncriptada = "AnotherEncryptedPassword",
-                            ContraseniaSinEncriptar = "UserPasswordPlainText",
-                            FechaIngreso = new DateTime(2023, 10, 16, 17, 2, 20, 210, DateTimeKind.Local).AddTicks(7443)
+                            Alias = "AutorizedUser",
+                            ContraseniaEncriptada = "Ys5BozLZg7Z9gBEgYB2VZgb9UaR3Mb45quOjqu0Bv3c=",
+                            ContraseniaSinEncriptar = "autorizado1",
+                            FechaIngreso = new DateTime(2023, 10, 17, 12, 9, 26, 175, DateTimeKind.Local).AddTicks(2443),
+                            TipoUsuario = "Autorizado"
                         });
                 });
 

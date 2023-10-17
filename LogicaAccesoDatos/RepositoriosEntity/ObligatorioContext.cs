@@ -68,10 +68,11 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         new UsuarioAdmin
         {
             Id = 1,
-            Alias = "AdminUser",
-            ContraseniaSinEncriptar = "UserPasswordPlainText",
-            ContraseniaEncriptada = "SomeEncryptedPassword", // Usa una contraseña encriptada
-            FechaIngreso = DateTime.Now
+            Alias = "admin1",
+            ContraseniaSinEncriptar = "Admin.12",
+            ContraseniaEncriptada = "RhWlBpJgE9IiOByk/rEDa96FJj9C3U1xWQxrtPbUG2w=", // Usa una contraseña encriptada
+            FechaIngreso = DateTime.Now,
+            TipoUsuario = "Admin"
         }
     );
 
@@ -80,10 +81,11 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 new UsuarioAutorizado
                 {
                     Id = 2,
-                    Alias = "GeneralUser",
-                    ContraseniaSinEncriptar = "UserPasswordPlainText",
-                    ContraseniaEncriptada = "AnotherEncryptedPassword", // Usa una contraseña encriptada
-                    FechaIngreso = DateTime.Now
+                    Alias = "AutorizedUser",
+                    ContraseniaSinEncriptar = "autorizado1",
+                    ContraseniaEncriptada = "Ys5BozLZg7Z9gBEgYB2VZgb9UaR3Mb45quOjqu0Bv3c=", // Usa una contraseña encriptada
+                    FechaIngreso = DateTime.Now,
+                    TipoUsuario = "Autorizado"
                 }
             );
             modelBuilder.Entity<ConfiguracionValidaciones>().HasData(

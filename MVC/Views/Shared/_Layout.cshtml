@@ -37,14 +37,18 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            @if (Context.Session.GetString("LogueadoAlias").Equals("Admin"))
+                            @if (Context.Session.GetString("LogueadoAlias").Equals("admin1"))
                             {
-
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="CrearUsuarioAutorizado">Crear autorizado</a>
+                                </li>
                             }
-                            else
-                            {
-                                @*autorizado*@
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Ecosistemas" asp-action="Create">Crear ecosistema</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Ecosistemas" asp-action="Index">Ver ecosistemas</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Logout">Logout</a>
                             </li>

@@ -79,5 +79,18 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 throw new UsuarioException("Error al buscar el usuario", ex);
             }
         }
+
+        public bool AliasExiste(string alias)
+        {
+            // Consultar la base de datos para verificar si el alias existe
+            if(_db.Usuarios.Any(u => u.Alias == alias))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
