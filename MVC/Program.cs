@@ -12,6 +12,8 @@ builder.Services.AddScoped<RepositorioEcosistema>();
 builder.Services.AddScoped<RepositorioUsuario>();
 builder.Services.AddScoped<RepositorioAmenaza>();
 builder.Services.AddScoped<RepositorioEstadosConservacion>();
+builder.Services.AddScoped<RepositorioConfiguracion>();
+builder.Services.AddScoped<RepositorioPais>();
 builder.Services.AddDbContext<ObligatorioContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StringConexion")));
 var app = builder.Build();

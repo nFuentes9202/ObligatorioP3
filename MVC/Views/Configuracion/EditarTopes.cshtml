@@ -1,0 +1,41 @@
+﻿@model Dominio.Entidades.ConfiguracionValidaciones
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Editar Topes</title>
+</head>
+<body>
+    <h1>Editar Topes de Descripción y Nombre</h1>
+    @if (TempData["Feedback"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Feedback"]
+        </div>
+    }
+    <form asp-action="GuardarTopes" method="post">
+        <div class="form-group">
+            <label for="topeMinimoDescripcion">Tope Mínimo de Descripción:</label>
+            <input type="number" id="topeMinimoDescripcion" name="topeMinimoDescripcion" value="@Model.TopeMinimoDescripcion" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="topeMaximoDescripcion">Tope Máximo de Descripción:</label>
+            <input type="number" id="topeMaximoDescripcion" name="topeMaximoDescripcion" value="@Model.TopeMaximoDescripcion" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="topeMinimoNombre">Tope Mínimo de Nombre:</label>
+            <input type="number" id="topeMinimoNombre" name="topeMinimoNombre" value="@Model.TopeMinimoNombre" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="topeMaximoNombre">Tope Máximo de Nombre:</label>
+            <input type="number" id="topeMaximoNombre" name="topeMaximoNombre" value="@Model.TopeMaximoNombre" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+</body>
+</html>

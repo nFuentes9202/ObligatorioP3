@@ -9,6 +9,8 @@ using Dominio.Entidades;
 using LogicaAccesoDatos.RepositoriosEntity;
 using MVC.Models;
 using MVC.Models.Conversiones;
+using Microsoft.Data.SqlClient;
+using Dominio.ExcepcionesEntidades;
 
 namespace MVC.Controllers
 {
@@ -19,21 +21,39 @@ namespace MVC.Controllers
         private readonly RepositorioAmenaza _repoAmenaza;
         private IWebHostEnvironment _environment;
         private readonly RepositorioEstadosConservacion _repoEstadosConservacion;
+        private readonly RepositorioPais _repoPaises;
+        private readonly RepositorioConfiguracion _repoConfiguracion;
 
-        public EcosistemasController(RepositorioEcosistema repoEcosistema, RepositorioAmenaza repoAmenaza, IWebHostEnvironment environment, RepositorioEstadosConservacion repositorioEstadosConservacion)
+        public EcosistemasController(RepositorioEcosistema repoEcosistema, RepositorioAmenaza repoAmenaza, IWebHostEnvironment environment, RepositorioEstadosConservacion repositorioEstadosConservacion, RepositorioPais repoPais, RepositorioConfiguracion repoConfiguracion)
         {
             _repoEcosistema = repoEcosistema;
             _repoAmenaza = repoAmenaza;
             _environment = environment;
             _repoEstadosConservacion = repositorioEstadosConservacion;
+            _repoPaises = repoPais;
+            _repoConfiguracion = repoConfiguracion;
         }
 
         // GET: Ecosistemas
         public ActionResult Index()
         {
-            IEnumerable<Ecosistema> _ecosistemas = _repoEcosistema.GetAll();
-            var ViewModel = _ecosistemas.Select(e => new EcosistemaModel(e)).ToList(); // Convertir a ViewModel
-            return View(ViewModel);
+            try
+            {
+                IEnumerable<Ecosistema> _ecosistemas = _repoEcosistema.GetAll();
+                var ViewModel = _ecosistemas.Select(e => new EcosistemaModel(e)).ToList(); // Convertir a ViewModel
+                if (ViewModel.Count == 0)
+                {
+                    TempData["Error"] = "No existen registros válidos";
+                }
+                return View(ViewModel);
+            }
+            catch (Exception e)
+            {
+
+                TempData["Error"] = e.Message;
+                return RedirectToAction("Index");
+            }
+            
 
         }
 
@@ -45,15 +65,25 @@ namespace MVC.Controllers
             }
             IEnumerable<AmenazaModel> amenazasModel = LlenarAmenazas();
             IEnumerable<EstadoConservacionModel> estadosModel = LlenarEstadosConservacion();
+            IEnumerable<PaisModel> paisesModel = LlenarPaises();
             SelectList amenazs = new SelectList(amenazasModel, "Id", "Descripcion");
             SelectList estados = new SelectList(estadosModel, "Id", "Nombre");
+            SelectList paises = new SelectList(paisesModel, "Id", "Nombre");
             EcosistemaAltaModel ecosistemaAltaModel = new EcosistemaAltaModel()
             {
                 TodasLasAmenazas = amenazs,
-                TodosLosEstadosConservacion = estados
+                TodosLosEstadosConservacion = estados,
+                TodosLosPaises = paises
             };
 
             return View(ecosistemaAltaModel);
+        }
+
+        private IEnumerable<PaisModel> LlenarPaises()
+        {
+            IEnumerable<Pais> paises = _repoPaises.GetAll();
+            IEnumerable<PaisModel> paisesModel = ConversionesPais.FromLista(paises);
+            return paisesModel;
         }
 
         private IEnumerable<AmenazaModel> LlenarAmenazas()
@@ -77,16 +107,128 @@ namespace MVC.Controllers
             {
                 if(ecosistemaModel == null || imagen == null)
                 {
-                    return RedirectToAction("Create");
+                    throw new Exception("Se debe seleccionar una imagen");
                 }
 
                 if (GuardarImagen(imagen, ecosistemaModel))
                 {
+                    var configuracionValidaciones = _repoConfiguracion.Get();
+
+                    if (ecosistemaModel.Nombre.Length < configuracionValidaciones.TopeMinimoNombre || ecosistemaModel.Nombre.Length > configuracionValidaciones.TopeMaximoNombre)
+                    {
+                        throw new Exception($"El nombre debe tener entre {configuracionValidaciones.TopeMinimoNombre} y {configuracionValidaciones.TopeMaximoNombre} caracteres.");
+                    }
+
+                    if (ecosistemaModel.Descripcion.Length < configuracionValidaciones.TopeMinimoDescripcion || ecosistemaModel.Descripcion.Length > configuracionValidaciones.TopeMaximoDescripcion)
+                    {
+                        throw new Exception($"La descripción debe tener entre {configuracionValidaciones.TopeMinimoDescripcion} y {configuracionValidaciones.TopeMaximoDescripcion} caracteres.");
+                    }
+
                     IEnumerable<Amenaza> amenazas = _repoAmenaza.ObtenerAmenazasSegunId(ecosistemaModel.AmenazasSeleccionadasIds);
+                    IEnumerable<Pais> paises = _repoPaises.ObtenerPaisesSegunId(ecosistemaModel.PaisId);
                     Ecosistema eco = ConversionesEcosistema.ModeloToEcosistema(ecosistemaModel);
                     eco.Amenazas = amenazas.ToList();
+                    eco.Paises = paises.ToList();
                     _repoEcosistema.Add(eco);
                     return View("Visualizar",ecosistemaModel);
+                }
+                else
+                {
+                    throw new Exception("No se pudo crear imagen");
+                }
+            }
+            catch(DbUpdateException excep)
+            {
+                TempData["Error"] = excep.InnerException.Message;
+                return RedirectToAction("Create");
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = e.Message;
+                return RedirectToAction("Create");
+            }
+        }
+        private bool GuardarImagen(IFormFile imagen, EcosistemaAltaModel eco)
+        {
+            try
+            {
+                if (imagen == null || eco == null)
+                {
+                    throw new Exception("Es necesario subir una imagen");
+                }
+                // SUBIR LA IMAGEN
+                //ruta física de wwwroot
+                var extension = Path.GetExtension(imagen.FileName).ToLower();
+                if(extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                {
+                    throw new Exception("La extensión de la imagen no es válida. Solo se permiten .jpg, .jpeg y .png.");
+                }
+                string rutaFisicaWwwRoot = _environment.WebRootPath;
+
+                //ruta donde se guardan las fotos de las personas
+                string rutaFisicaFoto = Path.Combine
+                (rutaFisicaWwwRoot, "imagenes", "ecosistemas");
+
+                if (!Directory.Exists(rutaFisicaFoto))
+                {
+                    Directory.CreateDirectory(rutaFisicaFoto);
+                }
+                //Generamos el nombre
+                int sufijo = 1;
+                string nombreImagen;
+                do
+                {
+                    nombreImagen = $"{eco.Id}_{sufijo.ToString("D3")}{extension}";
+                    sufijo++;
+                } while (System.IO.File.Exists(Path.Combine(rutaFisicaFoto, nombreImagen)));
+
+                //FileStream permite manejar archivos
+                try
+                {
+                    //el método using libera los recursos del objeto FileStream al finalizar
+                    using (FileStream f = new FileStream(Path.Combine(rutaFisicaFoto, nombreImagen), FileMode.Create))
+                    {
+                        //Para archivos grandes o varios archivos usar la versión
+                        //asincrónica de CopyTo. Sería: await imagen.CopyToAsync (f);
+                        imagen.CopyTo(f);
+                    }
+                    //GUARDAR EL NOMBRE DE LA IMAGEN SUBIDA EN EL OBJETO
+                    eco.ImagenRuta = nombreImagen;
+                    return true;
+                }
+
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+        }
+
+        public IActionResult Borrar(int id)
+        {
+            try
+            {
+                if (HttpContext.Session.GetInt32("LogueadoId") == null)
+                {
+                    return Unauthorized(); // No autorizado
+                }
+
+                if (_repoEcosistema.SePuedeBorrarEcosistema(id))
+                {
+                    _repoEcosistema.Delete(id);
+                    TempData["Feedback"] = "¡Ecosistema borrado exitosamente!";
+                }
+                else
+                {
+                    // Si el ecosistema es habitado, redirige con un mensaje de error
+                    TempData["Feedback"] = "El ecosistema no puede ser borrado porque es habitado por especies.";
+
                 }
                 return RedirectToAction("Index");
             }
@@ -95,36 +237,7 @@ namespace MVC.Controllers
 
                 throw;
             }
-        }
-        private bool GuardarImagen(IFormFile imagen, EcosistemaAltaModel eco)
-        {
-            if (imagen == null || eco == null) return false;
-            // SUBIR LA IMAGEN
-            //ruta física de wwwroot
-            string rutaFisicaWwwRoot = _environment.WebRootPath;
-
-            string nombreImagen = imagen.FileName;
-            //ruta donde se guardan las fotos de las personas
-            string rutaFisicaFoto = Path.Combine
-            (rutaFisicaWwwRoot, "imagenes", "fotos", nombreImagen);
-            //FileStream permite manejar archivos
-            try
-            {
-                //el método using libera los recursos del objeto FileStream al finalizar
-                using (FileStream f = new FileStream(rutaFisicaFoto, FileMode.Create))
-                {
-                    //Para archivos grandes o varios archivos usar la versión
-                    //asincrónica de CopyTo. Sería: await imagen.CopyToAsync (f);
-                    imagen.CopyTo(f);
-                }
-                //GUARDAR EL NOMBRE DE LA IMAGEN SUBIDA EN EL OBJETO
-                eco.ImagenRuta = nombreImagen;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            
         }
     }
 }

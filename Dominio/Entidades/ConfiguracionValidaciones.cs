@@ -11,51 +11,53 @@ namespace Dominio.Entidades
     public class ConfiguracionValidaciones
     {
         public int Id { get; set; }
-        public int topeMinimoDescripcion {  get; set; }
-        public int topeMaximoDescripcion { get; set; }
-        public int topeMinimoNombre{ get; set; }
-        public int topeMaximoNombre { get; set; }
+        public int TopeMinimoDescripcion { get; set; }
+        public int TopeMaximoDescripcion { get; set; }
+        public int TopeMinimoNombre { get; set; }
+        public int TopeMaximoNombre { get; set; }
 
         public ConfiguracionValidaciones()
         {
         }
-        public void ActualizarTopeMinimoDescripcion(int nuevoTope)
+
+        public void ActualizarTopeMinimoDescripcion(int nuevoTope, int longitudActualMinimaDescripcion)
         {
-            if (nuevoTope < topeMinimoDescripcion)
+            if (nuevoTope < 0 || nuevoTope > TopeMaximoDescripcion || nuevoTope > longitudActualMinimaDescripcion)
             {
-                throw new LimiteTextoException("El nuevo tope mínimo para la descripción no puede ser menor que el tope actual.");
+                throw new LimiteTextoException("El nuevo tope mínimo para la descripción es inválido o hay registros que no cumplen con el nuevo tope.");
             }
 
-            topeMinimoDescripcion = nuevoTope;
+            TopeMinimoDescripcion = nuevoTope;
         }
 
-        public void ActualizarTopeMinimoNombre(int nuevoTope)
+        public void ActualizarTopeMaximoDescripcion(int nuevoTope, int longitudActualMaximaDescripcion)
         {
-            if (nuevoTope < topeMinimoNombre)
+            if (nuevoTope < TopeMinimoDescripcion || nuevoTope < longitudActualMaximaDescripcion)
             {
-                throw new LimiteTextoException("El nuevo tope mínimo para el nombre no puede ser menor que el tope actual.");
+                throw new LimiteTextoException("El nuevo tope máximo para la descripción no puede ser menor que el tope mínimo o hay registros que no cumplen con el nuevo tope.");
             }
 
-            topeMinimoNombre = nuevoTope;
+            TopeMaximoDescripcion = nuevoTope;
         }
-        public void ValidarDatos(string nombre, string descripcion)
+
+        public void ActualizarTopeMinimoNombre(int nuevoTope, int longitudActualMinimaNombre)
         {
-            if(nombre.Length < topeMinimoDescripcion)
+            if (nuevoTope < 0 || nuevoTope > TopeMaximoNombre || nuevoTope > longitudActualMinimaNombre)
             {
-                throw new LimiteTextoException($"El nombre no puede ser menor a {topeMinimoNombre}");
+                throw new LimiteTextoException("El nuevo tope mínimo para el nombre es inválido o hay registros que no cumplen con el nuevo tope.");
             }
-            if(nombre.Length >  topeMaximoDescripcion)
+
+            TopeMinimoNombre = nuevoTope;
+        }
+
+        public void ActualizarTopeMaximoNombre(int nuevoTope, int longitudActualMaximaNombre)
+        {
+            if (nuevoTope < TopeMinimoNombre || nuevoTope < longitudActualMaximaNombre)
             {
-                throw new LimiteTextoException($"El nombre no puede ser mayor a {topeMaximoNombre}");
+                throw new LimiteTextoException("El nuevo tope máximo para el nombre no puede ser menor que el tope mínimo o hay registros que no cumplen con el nuevo tope.");
             }
-            if (descripcion.Length < topeMinimoDescripcion)
-            {
-                throw new LimiteTextoException($"La descripcion no puede ser menor a {topeMinimoDescripcion}");
-            }
-            if (descripcion.Length > topeMaximoDescripcion)
-            {
-                throw new LimiteTextoException($"La descripcion no puede ser mayor a {topeMaximoDescripcion}");
-            }
+
+            TopeMaximoNombre = nuevoTope;
         }
     }
 }

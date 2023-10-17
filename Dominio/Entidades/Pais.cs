@@ -1,16 +1,21 @@
 ﻿using Dominio.ExcepcionesEntidades;
 using Dominio.InterfacesEntidades;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Dominio.Entidades
 {
+    [Index(nameof(CodigoAlpha3), IsUnique = true)]
     public class Pais: IEntity, IValidable<Pais>
     {
+        [Key]
         public int Id { get; set; }
+
         public string CodigoAlpha3 { get; set; }
         public string Nombre { get; set; }
         public List<Ecosistema> Ecosistemas { get; set; }
