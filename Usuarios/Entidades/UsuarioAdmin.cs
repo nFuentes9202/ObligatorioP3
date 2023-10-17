@@ -13,8 +13,5 @@ namespace Usuarios.Entidades
         public UsuarioAdmin(string alias, string contraseniaencriptada, string contraseniasinencriptar) : base(alias, contraseniasinencriptar)
         {
         }
-
-        //me parece que va a servir el subsistema solo para UsuarioAdminController y de ahi hacer los create UsuarioAutorizado
-        //pero no me termina de convencer
     }
 }
