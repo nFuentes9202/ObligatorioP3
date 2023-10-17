@@ -14,5 +14,14 @@ namespace Usuarios.Entidades
         {
         }
 
+        public override string EncriptarContraseña(string contraseniasinencriptar)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Validar()
+        {
+            base.Validar();
+        }
     }
 }
