@@ -15,6 +15,12 @@
             @TempData["Feedback"]
         </div>
     }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Error"]
+        </div>
+    }
 
     <table>
         <thead>
@@ -41,7 +47,7 @@
                     <td>@ecosistema.Longitud</td>
                     <td>@ecosistema.AreaMetrosCuadrados</td>
                     <td>@ecosistema.EstadoConservacionNombre</td>
-                    <td><img class="img-thumbnail" src="~/imagenes/fotos/@ecosistema.ImagenRuta" /></td>
+                    <td><img class="img-thumbnail" src="~/imagenes/ecosistemas/@ecosistema.ImagenRuta" /></td>
                     @if (Context.Session.GetString("LogueadoId") != null)
                     {
                         <td> <a href="/Ecosistemas/Borrar/@ecosistema.Id" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas borrar este ecosistema?')">Borrar Ecosistema</a></td>

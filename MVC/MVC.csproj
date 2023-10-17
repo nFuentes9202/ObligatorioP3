@@ -27,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Especies\" />
+    <Folder Include="wwwroot\imagenes\ecosistemas\" />
     <Folder Include="wwwroot\imagenes\fotos\" />
   </ItemGroup>
 

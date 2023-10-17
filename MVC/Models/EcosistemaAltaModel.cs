@@ -5,6 +5,7 @@ namespace MVC.Models
 {
     public class EcosistemaAltaModel
     {
+        public int Id { get; set; } 
         [Required(ErrorMessage = "El nombre es necesario")]
         public string Nombre { get; set; }
         [Display(Name = "Área en metros cuadrados")]
@@ -27,12 +28,12 @@ namespace MVC.Models
 
         public SelectList TodosLosEstadosConservacion { get; set; }
 
-        [Display(Name = "Seleccione una amenaza")]
+        [Display(Name = "Seleccione una o varias amenaza")]
         [Required(ErrorMessage = "La amenaza es requerida.")]
         public IEnumerable<int> AmenazasSeleccionadasIds { get; set; }
         public SelectList TodasLasAmenazas { get; set; }
 
-        [Display(Name = "Seleccione un país")]
+        [Display(Name = "Seleccione uno o varios países")]
         [Required(ErrorMessage = "El pais es requerido")]
         public IEnumerable<int> PaisId { get; set; }
         public SelectList TodosLosPaises { get; set; }

@@ -91,9 +91,9 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 {
                     Id = 1,
                     TopeMaximoDescripcion = 500,
-                    TopeMaximoNombre = 500,
+                    TopeMaximoNombre = 50,
                     TopeMinimoDescripcion = 50,
-                    TopeMinimoNombre = 50
+                    TopeMinimoNombre = 2
                 }
             );
         }
