@@ -11,33 +11,33 @@ namespace Dominio.Entidades.ValueObjects.Especie
     [Owned]
     public class Imagen
     {
+        public Imagen()
+        {
+        }
+
+        public Imagen(string descripcion, string nombre, string rutaImagen)
+        {
+            Descripcion = descripcion;
+            Nombre = nombre;
+            RutaImagen = rutaImagen;
+            Validar();
+        }
+
         public string Descripcion { get; private set; }
         public string Nombre { get; private set; }
 
         public string RutaImagen { get; private set; }
-
-        public Imagen()
-        {
- 
-        }
-
-        public Imagen(string descripcion, string nombre)
-        {
-            Descripcion = descripcion;
-            Nombre = nombre;
-            Validar();
-        }
-
         private void Validar()
         {
             if (String.IsNullOrEmpty(Descripcion))
             {
-                throw new EspecieException("La descripción no puede ser vacía");
+                throw new EcosistemaException("No se puede tener una descripción nula en una imagén");
             }
             if (String.IsNullOrEmpty(Nombre))
             {
-                throw new EspecieException("El nombre no puede ser vacío");
+                throw new EcosistemaException("No se puede tener un nombre nulo en una imagén");
             }
+
         }
     }
 }

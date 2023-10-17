@@ -9,6 +9,15 @@ namespace MVC.Models.Conversiones
             return new Models.EcosistemaModel(ecosis);
         }
 
+        internal static IEnumerable<EcosistemaModel> FromLista(IEnumerable<Ecosistema> ecosistemas)
+        {
+            var listaModels = ecosistemas
+                .Select(ecos =>
+                new EcosistemaModel(ecos));
+    
+            return listaModels.ToList();
+        }
+
         internal static Ecosistema ModeloToEcosistema(EcosistemaAltaModel ecosistemaAltaModel)
         {
             return new Ecosistema

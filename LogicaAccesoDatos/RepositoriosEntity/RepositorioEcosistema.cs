@@ -97,5 +97,10 @@ namespace LogicaAccesoDatos.RepositoriosEntity
             }
             return false;
         }
+
+        public IEnumerable<Ecosistema> ObtenerEcosistemasSegunId(IEnumerable<int> ecosistemasSeleccionadosIds)
+        {
+            return _db.Ecosistemas.Where(a => ecosistemasSeleccionadosIds.Contains(a.Id)).ToList();
+        }
     }
 }

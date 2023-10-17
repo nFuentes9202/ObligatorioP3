@@ -1,5 +1,95 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿@model MVC.Models.EspecieAltaModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
+<h1>Crear especie</h1>
+
+<h4>Especies</h4>
+<hr />
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NombreVulgar" class="control-label"></label>
+                <input asp-for="NombreVulgar" class="form-control" />
+                <span asp-validation-for="NombreVulgar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombreCientifico" class="control-label"></label>
+                <input asp-for="NombreCientifico" class="form-control" />
+                <span asp-validation-for="NombreCientifico" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RangoPesoKg" class="control-label"></label>
+                <input asp-for="RangoPesoKg" class="form-control" />
+                <span asp-validation-for="RangoPesoKg" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RangoLongitudCm" class="control-label"></label>
+                <input asp-for="RangoLongitudCm" class="form-control" />
+                <span asp-validation-for="RangoLongitudCm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AmenazasSeleccionadasIds" class="control-label"></label>
+                <select asp-for="AmenazasSeleccionadasIds" asp-items="@Model.TodasLasAmenazas" class="list-group" multiple></select>
+                <span asp-validation-for="AmenazasSeleccionadasIds" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="EstadoConservacionId" class="control-label"></label>
+                    <select asp-for="EstadoConservacionId" asp-items="@Model.TodosLosEstadosConservacion" class="list-group"></select>
+                    <span asp-validation-for="EstadoConservacionId" class="text-danger"></span>
+                </div>
+                @if (Model.TodosLosEcosistemas != null && Model.TodosLosEcosistemas.Any())
+                {
+                    <div class="form-group">
+                        <label asp-for="EcosistemasSeleccionadosIds" class="control-label"></label>
+                        <select asp-for="EcosistemasSeleccionadosIds" asp-items="@Model.TodosLosEcosistemas" class="list-group" multiple></select>
+                        <span asp-validation-for="EcosistemasSeleccionadosIds" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <p>No hay ecosistemas disponibles para seleccionar.</p>
+                }
+
+                
+                </div>
+                <div class="form-group">
+                    <label for="imagen" class="control-label"></label>
+                    <input type="file" name="imagen" class="form-control" />
+                    <span asp-validation="imagen" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,0 +1,27 @@
+﻿@model MVC.Models.EspecieAltaModel
+@{
+    ViewData["Title"] = "Visualizar";
+}
+<div>
+    <h4>Visualización de la imagen de la especie</h4>
+    <h3 class="align-content-sm-center">
+        ¡Qué linda especie!
+    </h3>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NombreVulgar)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NombreVulgar)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(model => model.DescripcionImagen)
+        </dt>
+        <dd class="col-sm-10">
+            <img class="img-thumbnail" src="~/imagenes/especies/@Model.ImagenRuta" />
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Inicio</a>
+</div>

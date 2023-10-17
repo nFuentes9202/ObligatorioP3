@@ -1,4 +1,5 @@
 ﻿using Dominio.Entidades;
+using Dominio.ExcepcionesEntidades;
 using Dominio.InterfacesRepositorio;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,28 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 {
     public class RepositorioEspecie : IRepositorioEspecie
     {
+        private ObligatorioContext _db;
+        public RepositorioEspecie(ObligatorioContext db)
+        {
+            _db = db;
+        }
         public void Add(Especie obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (obj == null)
+                {
+                    throw new EcosistemaException("La especie no puede ser nula");
+                }
+                obj.Validar();
+                _db.Especies.Add(obj);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public void Delete(Especie obj)
