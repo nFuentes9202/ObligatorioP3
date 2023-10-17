@@ -7,21 +7,12 @@ using Usuarios.InterfacesEntidades;
 
 namespace Usuarios.Entidades
 {
-    public class UsuarioAutorizado:Usuario, IValidable<UsuarioAutorizado>
+    public class UsuarioAutorizado : Usuario, IValidable<UsuarioAutorizado>
     {
         public UsuarioAutorizado() { }
-        public UsuarioAutorizado(string alias, string contraseniasinencriptar) : base(alias,  contraseniasinencriptar)
+        public UsuarioAutorizado(string alias, string contraseniasinencriptar) : base(alias, contraseniasinencriptar)
         {
         }
 
-        public override string EncriptarContraseña(string contraseniasinencriptar)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Validar()
-        {
-            base.Validar();
-        }
     }
 }

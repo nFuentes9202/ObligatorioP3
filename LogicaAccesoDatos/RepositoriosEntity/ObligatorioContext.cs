@@ -68,10 +68,11 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         new UsuarioAdmin
         {
             Id = 1,
-            Alias = "AdminUser",
-            ContraseniaSinEncriptar = "UserPasswordPlainText",
-            ContraseniaEncriptada = "SomeEncryptedPassword", // Usa una contraseña encriptada
-            FechaIngreso = DateTime.Now
+            Alias = "admin1",
+            ContraseniaEncriptada = "RhWlBpJgE9IiOByk/rEDa96FJj9C3U1xWQxrtPbUG2w=",
+            ContraseniaSinEncriptar = "Admin.12",
+            FechaIngreso = new DateTime(2023, 10, 17, 12, 9, 26, 175, DateTimeKind.Local).AddTicks(2410),
+            TipoUsuario = "Admin"
         }
     );
 
@@ -80,10 +81,11 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 new UsuarioAutorizado
                 {
                     Id = 2,
-                    Alias = "GeneralUser",
-                    ContraseniaSinEncriptar = "UserPasswordPlainText",
-                    ContraseniaEncriptada = "AnotherEncryptedPassword", // Usa una contraseña encriptada
-                    FechaIngreso = DateTime.Now
+                    Alias = "AutorizedUser",
+                    ContraseniaEncriptada = "Ys5BozLZg7Z9gBEgYB2VZgb9UaR3Mb45quOjqu0Bv3c=",
+                    ContraseniaSinEncriptar = "autorizado1",
+                    FechaIngreso = new DateTime(2023, 10, 17, 12, 9, 26, 175, DateTimeKind.Local).AddTicks(2443),
+                    TipoUsuario = "Autorizado"
                 }
             );
             modelBuilder.Entity<ConfiguracionValidaciones>().HasData(

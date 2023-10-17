@@ -40,6 +40,7 @@ namespace MVC.Controllers
                 {
                     HttpContext.Session.SetInt32("LogueadoId", logueado.Id);
                     HttpContext.Session.SetString("LogueadoAlias", logueado.Alias);
+                    HttpContext.Session.SetString("LogueadoTipo", logueado.TipoUsuario);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -55,6 +56,45 @@ namespace MVC.Controllers
                 throw;
             }
             return View();
+        }
+
+        public IActionResult CrearUsuarioAutorizado()
+        {
+            int? lid = HttpContext.Session.GetInt32("LogueadoId");
+            if (lid == null)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CrearUsuarioAutorizado(string alias, string password)
+        {
+            try
+            {
+                if (_repoUsuario.AliasExiste(alias))
+                {
+                    ViewBag.Mensaje = "El alias ya existe";
+                    return View();
+                }
+                else
+                {
+                    UsuarioAutorizado usuarioAutorizado = new UsuarioAutorizado(alias, password);
+                    usuarioAutorizado.TipoUsuario = "Autorizado";
+                    _repoUsuario.Add(usuarioAutorizado);
+                    return RedirectToAction("Index", "Home");
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public IActionResult Logout()
