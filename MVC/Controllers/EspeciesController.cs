@@ -32,8 +32,6 @@ namespace MVC.Controllers
             return View();
         }
 
-
-
         public IActionResult Create()
         {
             IEnumerable<AmenazaModel> amenazasModel = LlenarAmenazas();
@@ -186,6 +184,62 @@ namespace MVC.Controllers
                 throw;
             }
 
+        }
+
+        public IActionResult AsignarEspecie()
+        {
+            var viewModel = new AsignarEspecieViewModel
+            {
+                Especies = _repoEspecie.GetAll().Select(es => new SelectListItem
+                {
+                    Text = es.Nombre.NombreVulgar,
+                    Value = es.Id.ToString()
+                }).ToList(),
+                Ecosistemas = _repoEcosistema.GetAll().Select(e => new SelectListItem
+                {
+                    Text = e.Nombre,
+                    Value = e.Id.ToString()
+                }).ToList()
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult AsignarEspecie(Especie especie, Ecosistema ecosistema)
+        {
+            try
+            {
+                especie= _repoEspecie.FindById(especie.Id);
+                ecosistema = _repoEcosistema.FindById(ecosistema.Id);
+
+
+                if(especie.Ecosistemas.Contains(ecosistema) && ecosistema.Especies.Contains(especie))
+                {
+                    throw new Exception("La especie ya se encuentra asignada a ese ecosistema");
+                }
+                else
+                {
+                    bool esViable = _repoEspecie.CompararAmenazas(especie, ecosistema);
+                    bool esViable2 = _repoEspecie.CompararEstadosConservacion(especie, ecosistema);
+
+                    if (esViable == true && esViable2==true)
+                    {
+                            especie.Ecosistemas.Add(ecosistema);
+                            ecosistema.Especies.Add(especie);
+                            _repoEspecie.Update(especie);
+                            _repoEcosistema.Update(ecosistema);
+                            return RedirectToAction("Index");
+                        
+                    }
+                    else {                         
+                        throw new Exception("La especie no puede ser asignada a ese ecosistema");
+                    }
+                }
+            }catch(Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("AsignarEspecie");
+            }
         }
     }
 }

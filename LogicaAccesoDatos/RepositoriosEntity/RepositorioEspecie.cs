@@ -54,5 +54,26 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         {
             throw new NotImplementedException();
         }
+
+        public bool CompararAmenazas(Especie especie, Ecosistema ecosistema)
+        {
+            foreach (var amenaza in especie.Amenazas)//recorro las amenazas de la especie
+            {
+                if (!ecosistema.Amenazas.Contains(amenaza))//si el ecosistema no contiene la amenaza de la especie
+                {
+                    return true;//devuelvo true
+                }
+            }
+            return false;//si recorri todas las amenazas y el ecosistema las contiene devuelvo false
+        }
+
+        public bool CompararEstadosConservacion(Especie especie, Ecosistema ecosistema)
+        {
+           if(especie.EstadoConservacion.RangoSeguridadMinimo > ecosistema.EstadoConservacion.RangoSeguridadMinimo)//si el rango de seguridad minimo de la especie es mayor al del ecosistema
+           {
+                return false;//devuelvo false
+           }
+            return true;
+        }
     }
 }
