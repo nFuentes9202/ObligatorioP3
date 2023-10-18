@@ -16,7 +16,6 @@ namespace Dominio.Entidades.ValueObjects.Especie
 
         public Nombre()
         {
-            Validar();
         }
 
         public Nombre(string nombreCientifico, string nombreVulgar)

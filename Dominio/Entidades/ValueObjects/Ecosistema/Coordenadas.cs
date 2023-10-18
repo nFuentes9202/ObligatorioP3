@@ -15,7 +15,6 @@ namespace Dominio.Entidades.ValueObjects.Ecosistema
         public decimal Longitud { get;private set; }
         public Coordenadas()
         {
-            Validar();
         }
         public Coordenadas(decimal latitud, decimal longitud)
         {

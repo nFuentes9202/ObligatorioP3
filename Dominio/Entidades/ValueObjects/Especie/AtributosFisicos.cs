@@ -16,7 +16,6 @@ namespace Dominio.Entidades.ValueObjects.Especie
 
         public AtributosFisicos()
         {
-            Validar();
         }
 
         public AtributosFisicos(decimal rangoPesoKg, decimal rangoLongitudCm)
