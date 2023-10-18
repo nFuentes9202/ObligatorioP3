@@ -186,9 +186,9 @@ namespace MVC.Controllers
 
         }
 
-        public IActionResult AsignarEspecie()
+        public IActionResult AsignarEspecie()//tecnicamente deberia funcionar pero PROBAR
         {
-            var viewModel = new AsignarEspecieViewModel
+            /*var viewModel = new AsignarEspecieViewModel
             {
                 Especies = _repoEspecie.GetAll().Select(es => new SelectListItem
                 {
@@ -201,7 +201,28 @@ namespace MVC.Controllers
                     Value = e.Id.ToString()
                 }).ToList()
             };
-            return View(viewModel);
+            return View(viewModel);*/
+
+            IEnumerable<EspecieModel> especiesModel = LlenarEspecies();
+            IEnumerable<EcosistemaModel> ecosistemaModels = LlenarEcosistemas();
+
+            SelectList especies = new SelectList(especiesModel, "Id", "Nombre");
+            SelectList ecosistemas = new SelectList(ecosistemaModels, "Id", "Nombre");
+
+            EspecieAsignarModel especieAsignarModel = new EspecieAsignarModel()
+            {
+                TodasLasEspecies = especies,
+                TodosLosEcosistemas = ecosistemas
+            };
+
+            return View(especieAsignarModel);
+        }
+
+        private IEnumerable<EspecieModel> LlenarEspecies()//tecncicamente deberia funcionar pero PROBAR
+        {
+            IEnumerable<Especie> especies = _repoEspecie.GetAll();
+            IEnumerable<EspecieModel> especieModel = ConversionesEspecie.FromLista(especies);
+            return especieModel;
         }
 
         [HttpPost]
@@ -241,5 +262,32 @@ namespace MVC.Controllers
                 return RedirectToAction("AsignarEspecie");
             }
         }
+
+        public IActionResult ConsultarEspecies()
+        {
+            try
+            {
+                IEnumerable<Especie> _especies = _repoEspecie.GetAll();//Obtener todas las especies
+                var ViewModel = _especies.Select(e => new ConsultarEspeciesModel(e)).ToList(); // Convertir a ViewModel
+                if (ViewModel.Count == 0)
+                {
+                    TempData["Error"] = "No existen registros válidos";
+                }
+                return View(ViewModel);
+            }
+            catch (Exception e)
+            {
+
+                TempData["Error"] = e.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        /*[HttpPost]
+
+        public IActionResult ConsultarEspecies()
+        {
+            return View();
+        }*/
     }
 }

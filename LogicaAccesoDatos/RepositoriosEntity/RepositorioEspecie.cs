@@ -47,7 +47,16 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public IEnumerable<Especie> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _db.Especies.ToList();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public void Update(Especie obj)

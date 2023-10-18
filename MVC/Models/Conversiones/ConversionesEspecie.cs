@@ -4,8 +4,23 @@ namespace MVC.Models.Conversiones
 {
     public class ConversionesEspecie
     {
+        internal static Models.EspecieModel EspecieToEspecieModel(Especie espe)
+        {
+            return new Models.EspecieModel(espe);
+        }
+
+        internal static IEnumerable<EspecieModel> FromLista(IEnumerable<Especie> especies)
+        {
+            var listaModels = especies
+                .Select(es =>
+                new EspecieModel(es));
+
+            return listaModels.ToList();
+        }
+
         internal static Especie ModeloToEspecie(EspecieAltaModel especieAltaModel)
         {
+
             return new Especie
             {
                 Descripcion = especieAltaModel.Descripcion,
@@ -16,5 +31,9 @@ namespace MVC.Models.Conversiones
             };
 
         }
+
+
+
+
     }
 }

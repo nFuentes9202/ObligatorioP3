@@ -1,0 +1,87 @@
+﻿@model IEnumerable<MVC.Models.ConsultarEspeciesModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index de Especies</title>
+    <link rel="stylesheet" type="text/css" href="/css/Especies/estilos.css">
+</head>
+<body>
+    <h1>Especies</h1>
+    @*
+    @if (TempData["Feedback"] != null)
+    {
+    <div class="alert alert-success">
+    @TempData["Feedback"]
+    </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+    <div class="alert alert-success">
+    @TempData["Error"]
+    </div>
+    }
+    *@
+
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre cientifico</th>
+                <th>Nombre vulgar</th>
+                <th>Descripción</th>
+                <th>Peso (kg)</th>
+                <th>Longitud (cm)</th>
+                <th>Estado de conservación</th>
+                <th>Imagen de especie</th>
+
+                <th>Amenazas</th>
+                <th>Ecosistema</th>
+                <th>Area de ecosistema (m²)</th>
+                <th>Descripción de ecosistema</th>
+                <th>Latitud de ecosistema</th>
+                <th>Longitud de ecosistema</th>
+                <th>Imagen de ecosistema</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var especie in Model)
+            {
+                <tr>
+                    <td>@especie.Id</td>
+                    <td>@especie.NombreCientifico</td>
+                    <td>@especie.NombreVulgar</td>
+                    <td>@especie.Descripcion</td>
+                    <td>@especie.RangoPesoKg</td>
+                    <td>@especie.RangoLongitudCm</td>
+                    <td>@especie.EstadoConservacion</td>
+                    <td><img class="img-thumbnail" src="~/imagenes/especies/@especie.EspecieRutaImagen" /></td>
+
+                    @foreach(var amenaza in especie.Amenazas)
+                    {
+                        <td>@amenaza.Descripcion</td>
+
+                    }
+
+
+                    @foreach(var ecosistema in especie.Ecosistemas)
+                    {
+                        <td>@ecosistema.Nombre</td>
+                        <td>@ecosistema.Descripcion</td>
+                        <td>@ecosistema.AreaMetrosCuadrados</td>
+                        <td>@ecosistema.Coordenadas.Latitud</td>
+                        <td>@ecosistema.Coordenadas.Longitud</td>
+                        <td>@ecosistema.EstadoConservacion.Nombre</td>
+                        <td><img class="img-thumbnail" src="~/imagenes/ecosistemas/@ecosistema.Imagen.RutaImagen"></td>
+                    }
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
