@@ -65,7 +65,17 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public Ecosistema FindById(int? id)
         {
-            throw new NotImplementedException();
+            Ecosistema es = _db.Ecosistemas
+                .Include(es => es.Especies)
+                .Include(es => es.Amenazas)
+                .Include(es => es.EstadoConservacion)
+                .FirstOrDefault(es => es.Id == id);
+
+            if (es == null)
+            {
+                throw new EcosistemaException("No se encontró el ecosistema");
+            }
+            return es;
         }
 
         public IEnumerable<Ecosistema> GetAll()
@@ -86,7 +96,20 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public void Update(Ecosistema obj)
         {
-            throw new NotImplementedException();
+            if (obj == null)
+            {
+                throw new EcosistemaException("El ecosistema no puede ser nula");
+            }
+            obj.Validar();
+            try
+            {
+                _db.Ecosistemas.Update(obj);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudo modificar el ecosistema");
+            }
         }
         public bool SePuedeBorrarEcosistema(int id)
         {

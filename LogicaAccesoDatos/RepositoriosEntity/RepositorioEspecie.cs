@@ -1,6 +1,7 @@
 ﻿using Dominio.Entidades;
 using Dominio.ExcepcionesEntidades;
 using Dominio.InterfacesRepositorio;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,17 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public Especie FindById(int? id)
         {
-            throw new NotImplementedException();
+            Especie es = _db.Especies
+                .Include(e => e.Ecosistemas)
+                .Include(e => e.Amenazas)
+                .Include(e => e.EstadoConservacion)
+                .FirstOrDefault(e => e.Id == id);
+
+            if (es == null)
+            {
+                throw new EcosistemaException("No se encontró la especie");
+            }
+            return es;
         }
 
         public IEnumerable<Especie> GetAll()
@@ -61,7 +72,19 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public void Update(Especie obj)
         {
-            throw new NotImplementedException();
+            if(obj == null)
+            {
+                throw new EspecieException("La especie no puede ser nula");
+            }
+            obj.Validar();
+            try
+            {
+                _db.Especies.Update(obj);
+                _db.SaveChanges();
+            }catch(Exception ex)
+            {
+                throw new Exception("No se pudo modificar la especie");
+            }
         }
 
         public bool CompararAmenazas(Especie especie, Ecosistema ecosistema)

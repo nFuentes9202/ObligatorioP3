@@ -94,7 +94,6 @@ namespace MVC.Controllers
                     {
                         throw new Exception($"El nombre debe tener entre {configuracionValidaciones.TopeMinimoNombre} y {configuracionValidaciones.TopeMaximoNombre} caracteres.");
                     }
-
                     if (especieAltaModel.Descripcion.Length < configuracionValidaciones.TopeMinimoDescripcion || especieAltaModel.Descripcion.Length > configuracionValidaciones.TopeMaximoDescripcion)
                     {
                         throw new Exception($"La descripción debe tener entre {configuracionValidaciones.TopeMinimoDescripcion} y {configuracionValidaciones.TopeMaximoDescripcion} caracteres.");
@@ -186,39 +185,31 @@ namespace MVC.Controllers
 
         }
 
-        public IActionResult AsignarEspecie()//tecnicamente deberia funcionar pero PROBAR
+        public IActionResult AsignarEspecie()
         {
-            /*var viewModel = new AsignarEspecieViewModel
+            var especies = _repoEspecie.GetAll(); // Obtén todas las especies del repositorio
+            var ecosistemas = _repoEcosistema.GetAll(); // Obtén todos los ecosistemas del repositorio
+
+            var viewModel = new EspecieAsignarModel
             {
-                Especies = _repoEspecie.GetAll().Select(es => new SelectListItem
+                Especies = especies.Select(especie => new SelectListItem
                 {
-                    Text = es.Nombre.NombreVulgar,
-                    Value = es.Id.ToString()
+                    Text = especie.Nombre.NombreVulgar,
+                    Value = especie.Id.ToString()
                 }).ToList(),
-                Ecosistemas = _repoEcosistema.GetAll().Select(e => new SelectListItem
+                Ecosistemas = ecosistemas.Select(ecosistema => new SelectListItem
                 {
-                    Text = e.Nombre,
-                    Value = e.Id.ToString()
+                    Text = ecosistema.Nombre,
+                    Value = ecosistema.Id.ToString()
                 }).ToList()
             };
-            return View(viewModel);*/
 
-            IEnumerable<EspecieModel> especiesModel = LlenarEspecies();
-            IEnumerable<EcosistemaModel> ecosistemaModels = LlenarEcosistemas();
+            return View(viewModel);
 
-            SelectList especies = new SelectList(especiesModel, "Id", "Nombre");
-            SelectList ecosistemas = new SelectList(ecosistemaModels, "Id", "Nombre");
 
-            EspecieAsignarModel especieAsignarModel = new EspecieAsignarModel()
-            {
-                TodasLasEspecies = especies,
-                TodosLosEcosistemas = ecosistemas
-            };
-
-            return View(especieAsignarModel);
         }
 
-        private IEnumerable<EspecieModel> LlenarEspecies()//tecncicamente deberia funcionar pero PROBAR
+        private IEnumerable<EspecieModel> LlenarEspecies()
         {
             IEnumerable<Especie> especies = _repoEspecie.GetAll();
             IEnumerable<EspecieModel> especieModel = ConversionesEspecie.FromLista(especies);
@@ -226,37 +217,57 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult AsignarEspecie(Especie especie, Ecosistema ecosistema)
+        public IActionResult AsignarEspecie(Models.EspecieAsignarModel especieAsignarModel)
         {
             try
             {
-                especie= _repoEspecie.FindById(especie.Id);
-                ecosistema = _repoEcosistema.FindById(ecosistema.Id);
-
-
-                if(especie.Ecosistemas.Contains(ecosistema) && ecosistema.Especies.Contains(especie))
+                if(especieAsignarModel == null)
                 {
-                    throw new Exception("La especie ya se encuentra asignada a ese ecosistema");
+                    throw new Exception("Se debe seleccionar una especie y un ecosistema");
                 }
-                else
-                {
-                    bool esViable = _repoEspecie.CompararAmenazas(especie, ecosistema);
-                    bool esViable2 = _repoEspecie.CompararEstadosConservacion(especie, ecosistema);
 
-                    if (esViable == true && esViable2==true)
+                int especieId = especieAsignarModel.EspecieId;
+                int ecosistemaId = especieAsignarModel.EcosistemaId;
+
+                Especie especie = _repoEspecie.FindById(especieId);
+                Ecosistema ecosistema = _repoEcosistema.FindById(ecosistemaId);
+
+                if(especie != null && ecosistema != null)
+                {
+                    if (especie.Ecosistemas.Contains(ecosistema) && ecosistema.Especies.Contains(especie))
                     {
+                        throw new Exception("La especie ya se encuentra asignada a ese ecosistema");
+                    }
+                    else
+                    {
+                        bool esViable = _repoEspecie.CompararAmenazas(especie, ecosistema);
+                        bool esViable2 = _repoEspecie.CompararEstadosConservacion(especie, ecosistema);
+
+                        if (esViable == true && esViable2 == true)
+                        {
                             especie.Ecosistemas.Add(ecosistema);
                             ecosistema.Especies.Add(especie);
                             _repoEspecie.Update(especie);
                             _repoEcosistema.Update(ecosistema);
-                            return RedirectToAction("Index");
-                        
+                            TempData["Mensaje"] = "La especie se asignó correctamente";
+                            return RedirectToAction("AsignarEspecie");
+
+                        }
+                        else
+                        {
+                            throw new Exception("La especie no puede ser asignada a ese ecosistema");
+                        }
                     }
-                    else {                         
-                        throw new Exception("La especie no puede ser asignada a ese ecosistema");
-                    }
+                    
                 }
-            }catch(Exception ex)
+                else
+                {
+                    throw new Exception("La especie o el ecosistema no existen");
+                }
+
+
+            }
+            catch(Exception ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction("AsignarEspecie");
