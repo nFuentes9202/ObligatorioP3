@@ -62,7 +62,10 @@ namespace LogicaAccesoDatos.RepositoriosEntity
             {
                 return _db.Especies
                     .Include(e => e.Ecosistemas)
-                        .ThenInclude(e => e.EstadoConservacion)
+                    .ThenInclude(ecosistema => ecosistema.EstadoConservacion)
+                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.Imagen)
+
                     .Include(e => e.Amenazas)
                     .Include(e => e.AtributosFisicos)
                     .Include(e => e.Imagen)
@@ -115,5 +118,95 @@ namespace LogicaAccesoDatos.RepositoriosEntity
            }
             return true;
         }
+
+        public IEnumerable<Especie> SearchByNombreCientifico(string nombreCientifico)
+        {
+            return _db.Especies.Where(e => e.Nombre.NombreCientifico.Contains(nombreCientifico))
+                                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.EstadoConservacion)
+                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.Imagen)
+                    .Include(e => e.Amenazas)
+                    .Include(e => e.AtributosFisicos)
+                    .Include(e => e.Imagen)
+                    .Include(e => e.Nombre)
+                    .Include(e => e.EstadoConservacion)
+                .ToList();
+        }
+
+        public IEnumerable<Especie> SearchByPeligroExtincion()
+        {
+            var especiesEnPeligro = _db.Especies
+                .Where(e =>
+                    e.EstadoConservacion.RangoSeguridadMaximo < 60 ||
+                    e.Amenazas.Count > 3 ||
+                    e.Ecosistemas.Any(ecosistema =>
+                        ecosistema.Amenazas.Count > 3 &&
+                        ecosistema.EstadoConservacion.RangoSeguridadMaximo < 60))
+                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.EstadoConservacion)
+                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.Imagen)
+                    .Include(e => e.Amenazas)
+                    .Include(e => e.AtributosFisicos)
+                    .Include(e => e.Imagen)
+                    .Include(e => e.Nombre)
+                    .Include(e => e.EstadoConservacion)
+                .ToList();
+
+            return especiesEnPeligro;
+        }
+
+        public IEnumerable<Especie> SearchByPesoRange(decimal pesoMinimo, decimal pesoMaximo)
+        {
+            return _db.Especies
+                .Where(e => e.AtributosFisicos.RangoPesoKg >= pesoMinimo && e.AtributosFisicos.RangoPesoKg <= pesoMaximo)
+                     .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.EstadoConservacion)
+                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.Imagen)
+                    .Include(e => e.Amenazas)
+                    .Include(e => e.AtributosFisicos)
+                    .Include(e => e.Imagen)
+                    .Include(e => e.Nombre)
+                    .Include(e => e.EstadoConservacion)
+                .ToList();
+        }
+
+        public IEnumerable<Especie> SearchByEcosistema(int ecosistemaId)
+        {
+            return _db.Especies
+                .Where(e => e.Ecosistemas.Any(ecosistema => ecosistema.Id == ecosistemaId))
+                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.EstadoConservacion)
+                    .Include(e => e.Ecosistemas)
+                    .ThenInclude(ecosistema => ecosistema.Imagen)
+                    .Include(e => e.Amenazas)
+                    .Include(e => e.AtributosFisicos)
+                    .Include(e => e.Imagen)
+                    .Include(e => e.Nombre)
+                    .Include(e => e.EstadoConservacion)
+                .ToList();
+        }
+
+        /*public IEnumerable<Ecosistema> SearchEcosistemasNoHabitables(int especieId)
+        {
+            // Obtener la especie seleccionada
+            var especie = _db.Especies.Include(e => e.Ecosistemas).FirstOrDefault(e => e.Id == especieId);
+
+            if (especie != null)
+            {
+                // Obtener todos los ecosistemas y filtrar aquellos en los que la especie no puede habitar
+                var ecosistemas = _db.Ecosistemas.ToList();
+                var ecosistemasNoHabitables = ecosistemas.Where(ecosistema => !especie.Ecosistemas.Any(e => e.Id == ecosistema.Id))
+                    .Include(ecosistemas.);
+
+                return ecosistemasNoHabitables;
+            }
+
+            // Manejar el caso en que la especie no se encuentra
+            return null;
+        }*/
+
     }
 }

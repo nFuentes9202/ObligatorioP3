@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Dominio.Entidades.Ecosistema>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index de Especies</title>
+    <link rel="stylesheet" type="text/css" href="/css/Especies/estilos.css">
+</head>
+<body>
+    <h1>Ecosistemas en los que la especie no puede habitar</h1>
+    @if (Model.Any())
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                    <th>Area (m²)</th>
+                    <th>Coordenadas</th>
+                    <th>Amenazas</th>
+                    <th>Estado de conservación</th>
+                    <th>Paises</th>
+                    <th>Imagen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ecosistema in Model)
+                {
+                    <tr>
+                        <td>@ecosistema.Nombre</td>
+                        <td>@ecosistema.Descripcion</td>
+                        <td>@ecosistema.AreaMetrosCuadrados</td>
+                        <td>Latidud: @ecosistema.Coordenadas.Latitud , Longitud: @ecosistema.Coordenadas.Longitud</td>
+                        <td>
+                            <ul>
+                                @foreach (var amenaza in ecosistema.Amenazas)
+                                {
+                                    <li>
+                                        @amenaza.Descripcion: Grado de peligrosidad @amenaza.GradoPeligrosidad
+                                    </li>
+                                }
+                            </ul>
+                        <td>@ecosistema.EstadoConservacion.Nombre</td>
+                        <td>
+                            <ul>
+                                @foreach (var pais in ecosistema.Paises)
+                                {
+                                    <li>
+                                        @pais.Nombre
+                                    </li>
+                                }
+                            </ul>
+
+                        </td>
+                        <td><img class="img-thumbnail" src="~/imagenes/ecosistemas/@ecosistema.Imagen.RutaImagen" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No hay ecosistemas que no pueda habitar.</p>
+    }
+
+    <a asp-controller="Especies" asp-action="ConsultarEspecies">Volver a la consulta de especies</a>
+</body>
+</html>

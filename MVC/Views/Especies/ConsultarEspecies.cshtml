@@ -1,5 +1,4 @@
-﻿@*@model IEnumerable<MVC.Models.EspecieModel>*@
-    @model List<Dominio.Entidades.Especie>
+﻿@model List<Dominio.Entidades.Especie>
 
 <!DOCTYPE html>
 <html>
@@ -10,7 +9,44 @@
 </head>
 <body>
     <h1>Especies</h1>
-
+    @using(Html.BeginForm("ConsultarEspecies", "Especies", FormMethod.Post))
+    {
+        <div>
+            <h2>Consulta de Especies</h2>
+            <div>
+                <h6>Filtrar por Nombre cientifico</h6>
+                @Html.Label("Nombre Científico")
+                @Html.TextBox("NombreCientifico", ViewBag.NombreCientifico as string)
+                <button type="submit" name="filter" value="NombreCientifico">Filtrar</button>
+            </div>
+            <div>
+                <h6>Filtrar por peligro de extinción</h6>
+                <button type="submit" name="FiltrarPeligroExtincion" value="true">Filtrar</button>
+            </div>
+            <div>
+                <div>
+                    <h6>Filtrar por rango de peso</h6>
+                    @Html.Label("Peso mínimo (kg)")
+                    @Html.TextBox("PesoMinimo", ViewBag.PesoMinimo as string)
+                    @Html.Label("Peso máximo (kg)")
+                    @Html.TextBox("PesoMaximo", ViewBag.PesoMaximo as string)
+                    <button type="submit" name="filter" value="FiltrarPorPeso">Filtrar</button>
+                </div>
+            </div>
+            <div>
+                <h6>Filtrar por ecosistema</h6>
+                @Html.Label("Ecosistema")
+                @Html.DropDownList("EcosistemaId", ViewBag.Ecosistemas as SelectList)
+                <button type="submit" name="filter" value="FiltrarPorEcosistema">Filtrar por Ecosistema</button>
+            </div>
+            <div>
+                <h6>Filtrar ecosistemas no habitables por especie</h6>
+                @Html.Label("Especies")
+                @Html.DropDownList("EspecieId", ViewBag.Especies as SelectList)
+                <button type="submit" name="filter" value="FiltrarPorEspecie">Filtrar por especie</button>
+            </div>
+        </div>
+    }
     <table>
         <thead>
             <tr>
@@ -22,30 +58,13 @@
                 <th>Longitud (cm)</th>
                 <th>Estado de conservación</th>
                 <th>Imagen de especie</th>
-                @*estaria necesitando q se hagan titulos x cada amenaza en el model*@
                 <th>Amenaza descripción</th>
                 <th>Amenaza grado de peligrosidad</th>
-                @*<th>Ecosistema</th>
-                <th>Area de ecosistema (m²)</th>
-                <th>Descripción de ecosistema</th>
-                <th>Latitud de ecosistema</th>
-                <th>Longitud de ecosistema</th>
-                <th>Imagen de ecosistema</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Area de ecosistema (m²)</th>
-                <th>Latitud de ecosistema</th>
-                <th>Longitud de ecosistema</th>
-                <th>Estado de conservación</th>
-                <th>Imagen de ecosistema</th>*@
-
-                @*<th>Amenazas</th>
                 <th>Ecosistema</th>
                 <th>Area de ecosistema (m²)</th>
-                <th>Descripción de ecosistema</th>
-                <th>Latitud de ecosistema</th>
-                <th>Longitud de ecosistema</th>
-                <th>Imagen de ecosistema</th>*@
+                <th>Latitud y Longitud</th>
+                <th>Estado de conservación de ecosistema</th>
+                <th>Imagen de ecosistema</th>
 
             </tr>
         </thead>
@@ -61,42 +80,76 @@
                     <td>@especie.AtributosFisicos.RangoLongitudCm</td>
                     <td>@especie.EstadoConservacion.Nombre</td>
                     <td><img class="img-thumbnail" src="~/imagenes/especies/@especie.Imagen.RutaImagen" /></td>
-                    @foreach (var amenaza in especie.Amenazas)
-                    {
-                        <td>@amenaza.Descripcion</td>
-                        <td>@amenaza.GradoPeligrosidad</td>
-                    }
-                        
-
-                    
-
-                    @*<td>
-                <ul>
-                @foreach (var ecosistema in especie.Ecosistemas)
-                {
-                <thead>
-                <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Area de ecosistema (m²)</th>
-                <th>Latitud de ecosistema</th>
-                <th>Longitud de ecosistema</th>
-                <th>Estado de conservación</th>
-                <th>Imagen de ecosistema</th>
-                </tr>
-                </thead>
-                <td>@ecosistema.Nombre</td>
-                <td>@ecosistema.Descripcion</td>
-                <td>@ecosistema.AreaMetrosCuadrados</td>
-                <td>@ecosistema.Coordenadas.Latitud</td>
-                <td>@ecosistema.Coordenadas.Longitud</td>
-                <td>@ecosistema.EstadoConservacion.Nombre</td>
-                <td><img class="img-thumbnail" src="~/imagenes/ecosistemas/@ecosistema.Imagen.RutaImagen"></td>
-                }
-                </ul>
-                </td>*@
-
-
+                    <td>
+                        <ul>
+                            @foreach(var amenaza in especie.Amenazas)
+                            {
+                                <li>
+                                    @amenaza.Descripcion
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach(var amenaza in especie.Amenazas)
+                            {
+                                <li>
+                                    @amenaza.Descripcion: @amenaza.GradoPeligrosidad
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var ecosistema in especie.Ecosistemas)
+                            {
+                                <li>
+                                    @ecosistema.Nombre : @ecosistema.Descripcion
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var ecosistema in especie.Ecosistemas)
+                            {
+                                <li>
+                                    @ecosistema.Nombre : @ecosistema.AreaMetrosCuadrados
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var ecosistema in especie.Ecosistemas)
+                            {
+                                <li>
+                                    @ecosistema.Nombre : @ecosistema.Coordenadas.Latitud , @ecosistema.Coordenadas.Longitud
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var ecosistema in especie.Ecosistemas)
+                            {
+                                <li>
+                                    @ecosistema.Nombre : @ecosistema.EstadoConservacion.Nombre
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var ecosistema in especie.Ecosistemas)
+                            {
+                                <li>
+                                    @ecosistema.Nombre : <img class="img-thumbnail" src="~/imagenes/ecosistemas/@ecosistema.Imagen.RutaImagen" />
+                                </li>
+                            }
+                        </ul>
+                    </td>
                 </tr>
             }
         </tbody>

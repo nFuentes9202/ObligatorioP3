@@ -249,12 +249,13 @@ namespace MVC.Controllers
                             ecosistema.Especies.Add(especie);
                             _repoEspecie.Update(especie);
                             _repoEcosistema.Update(ecosistema);
-                            TempData["Mensaje"] = "La especie se asignó correctamente";
+                            TempData["MensajeAsignarEspecie"] = "La especie se asignó correctamente";
                             return RedirectToAction("AsignarEspecie");
 
                         }
                         else
                         {
+                            TempData["MensajeAsignarEspecie"] = "La especie no puede ser asignada a ese ecosistema";
                             throw new Exception("La especie no puede ser asignada a ese ecosistema");
                         }
                     }
@@ -278,6 +279,14 @@ namespace MVC.Controllers
         {
             try
             {
+                var ecosistemas = _repoEcosistema.GetAll();
+                SelectList ecosistemasSelectList = new SelectList(ecosistemas, "Id", "Nombre");
+                ViewBag.Ecosistemas = ecosistemasSelectList;
+
+                var especiesDeLaDb = _repoEspecie.GetAll();
+                SelectList especiesSelectList = new SelectList(especiesDeLaDb, "Id", "Nombre.NombreVulgar");
+                ViewBag.Especies = especiesSelectList;
+
                 IEnumerable<Especie> _especies = _repoEspecie.GetAll();//Obtener todas las especies
                 if (_especies.Any())
                 {
@@ -288,7 +297,6 @@ namespace MVC.Controllers
                     TempData["Error"] = "No se encontraron especies";
                     return RedirectToAction("Index");
                 }
-                //var ViewModel = _especies.Select(e => new ConsultarEspeciesModel(e)).ToList(); // Convertir a ViewModel
 
             }
             catch (Exception e)
@@ -299,11 +307,66 @@ namespace MVC.Controllers
             }
         }
 
-        /*[HttpPost]
+        [HttpPost]
 
-        public IActionResult ConsultarEspecies()
+        public IActionResult ConsultarEspecies(string filter, string NombreCientifico, bool FiltrarPeligroExtincion, string PesoMinimo, string PesoMaximo, int EcosistemaId, int EspecieId)
         {
+            var ecosistemas = _repoEcosistema.GetAll();
+            SelectList ecosistemasSelectList = new SelectList(ecosistemas, "Id", "Nombre");
+            ViewBag.Ecosistemas = ecosistemasSelectList;
+
+            var especiesDeLaDb = _repoEspecie.GetAll();
+            SelectList especiesSelectList = new SelectList(especiesDeLaDb, "Id", "Nombre.NombreVulgar");
+            ViewBag.Especies = especiesSelectList;
+
+            if (filter == "NombreCientifico")
+            {
+                var especies = _repoEspecie.SearchByNombreCientifico(NombreCientifico);
+                return View(especies);
+            }
+            else if (FiltrarPeligroExtincion)
+            {
+                var especies = _repoEspecie.SearchByPeligroExtincion();
+                return View(especies);
+            }
+            else if (filter == "FiltrarPorPeso")
+            {
+                decimal minimo, maximo;
+
+                if (decimal.TryParse(PesoMinimo, out minimo) && decimal.TryParse(PesoMaximo, out maximo))
+                {
+                    var especies = _repoEspecie.SearchByPesoRange(minimo, maximo);
+                    return View(especies);
+                }
+            }
+            else if (filter == "FiltrarPorEcosistema")
+            {
+                if(EcosistemaId != null)
+                {
+                    var especies = _repoEspecie.SearchByEcosistema(EcosistemaId);
+                    if (especies != null)
+                    {
+                           return View(especies);
+                    }
+                    else
+                    {
+                        TempData["Error"] = "No se encontraron especies";
+                        return View();
+                    }
+                }
+
+            }
+            else if(filter == "FiltrarPorEspecie")
+            {
+                if(EspecieId != null)
+                {
+                    var ecosistemasNoHabitables = _repoEcosistema.SearchEcosistemasNoHabitables(EspecieId);//Obtener todos los ecosistemas no habitables
+                    return View("EcosistemasNoHabitables", ecosistemasNoHabitables);//Mostrar los ecosistemas no habitables en la vista EcosistemasNoHabitables
+                }
+            }
             return View();
-        }*/
+        }
+
+
     }
 }
