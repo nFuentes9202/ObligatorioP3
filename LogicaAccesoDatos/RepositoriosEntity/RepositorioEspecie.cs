@@ -189,24 +189,5 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 .ToList();
         }
 
-        /*public IEnumerable<Ecosistema> SearchEcosistemasNoHabitables(int especieId)
-        {
-            // Obtener la especie seleccionada
-            var especie = _db.Especies.Include(e => e.Ecosistemas).FirstOrDefault(e => e.Id == especieId);
-
-            if (especie != null)
-            {
-                // Obtener todos los ecosistemas y filtrar aquellos en los que la especie no puede habitar
-                var ecosistemas = _db.Ecosistemas.ToList();
-                var ecosistemasNoHabitables = ecosistemas.Where(ecosistema => !especie.Ecosistemas.Any(e => e.Id == ecosistema.Id))
-                    .Include(ecosistemas.);
-
-                return ecosistemasNoHabitables;
-            }
-
-            // Manejar el caso en que la especie no se encuentra
-            return null;
-        }*/
-
     }
 }
