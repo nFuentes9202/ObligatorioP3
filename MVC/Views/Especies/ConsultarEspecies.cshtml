@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MVC.Models.ConsultarEspeciesModel>
+﻿@*@model IEnumerable<MVC.Models.EspecieModel>*@
+    @model List<Dominio.Entidades.Especie>
 
 <!DOCTYPE html>
 <html>
@@ -9,21 +10,6 @@
 </head>
 <body>
     <h1>Especies</h1>
-    @*
-    @if (TempData["Feedback"] != null)
-    {
-    <div class="alert alert-success">
-    @TempData["Feedback"]
-    </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-    <div class="alert alert-success">
-    @TempData["Error"]
-    </div>
-    }
-    *@
-
 
     <table>
         <thead>
@@ -36,14 +22,30 @@
                 <th>Longitud (cm)</th>
                 <th>Estado de conservación</th>
                 <th>Imagen de especie</th>
-
-                <th>Amenazas</th>
-                <th>Ecosistema</th>
+                @*estaria necesitando q se hagan titulos x cada amenaza en el model*@
+                <th>Amenaza descripción</th>
+                <th>Amenaza grado de peligrosidad</th>
+                @*<th>Ecosistema</th>
                 <th>Area de ecosistema (m²)</th>
                 <th>Descripción de ecosistema</th>
                 <th>Latitud de ecosistema</th>
                 <th>Longitud de ecosistema</th>
                 <th>Imagen de ecosistema</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Area de ecosistema (m²)</th>
+                <th>Latitud de ecosistema</th>
+                <th>Longitud de ecosistema</th>
+                <th>Estado de conservación</th>
+                <th>Imagen de ecosistema</th>*@
+
+                @*<th>Amenazas</th>
+                <th>Ecosistema</th>
+                <th>Area de ecosistema (m²)</th>
+                <th>Descripción de ecosistema</th>
+                <th>Latitud de ecosistema</th>
+                <th>Longitud de ecosistema</th>
+                <th>Imagen de ecosistema</th>*@
 
             </tr>
         </thead>
@@ -52,31 +54,47 @@
             {
                 <tr>
                     <td>@especie.Id</td>
-                    <td>@especie.NombreCientifico</td>
-                    <td>@especie.NombreVulgar</td>
+                    <td>@especie.Nombre.NombreCientifico</td>
+                    <td>@especie.Nombre.NombreVulgar</td>
                     <td>@especie.Descripcion</td>
-                    <td>@especie.RangoPesoKg</td>
-                    <td>@especie.RangoLongitudCm</td>
-                    <td>@especie.EstadoConservacion</td>
-                    <td><img class="img-thumbnail" src="~/imagenes/especies/@especie.EspecieRutaImagen" /></td>
-
-                    @foreach(var amenaza in especie.Amenazas)
+                    <td>@especie.AtributosFisicos.RangoPesoKg</td>
+                    <td>@especie.AtributosFisicos.RangoLongitudCm</td>
+                    <td>@especie.EstadoConservacion.Nombre</td>
+                    <td><img class="img-thumbnail" src="~/imagenes/especies/@especie.Imagen.RutaImagen" /></td>
+                    @foreach (var amenaza in especie.Amenazas)
                     {
                         <td>@amenaza.Descripcion</td>
-
+                        <td>@amenaza.GradoPeligrosidad</td>
                     }
+                        
 
+                    
 
-                    @foreach(var ecosistema in especie.Ecosistemas)
-                    {
-                        <td>@ecosistema.Nombre</td>
-                        <td>@ecosistema.Descripcion</td>
-                        <td>@ecosistema.AreaMetrosCuadrados</td>
-                        <td>@ecosistema.Coordenadas.Latitud</td>
-                        <td>@ecosistema.Coordenadas.Longitud</td>
-                        <td>@ecosistema.EstadoConservacion.Nombre</td>
-                        <td><img class="img-thumbnail" src="~/imagenes/ecosistemas/@ecosistema.Imagen.RutaImagen"></td>
-                    }
+                    @*<td>
+                <ul>
+                @foreach (var ecosistema in especie.Ecosistemas)
+                {
+                <thead>
+                <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Area de ecosistema (m²)</th>
+                <th>Latitud de ecosistema</th>
+                <th>Longitud de ecosistema</th>
+                <th>Estado de conservación</th>
+                <th>Imagen de ecosistema</th>
+                </tr>
+                </thead>
+                <td>@ecosistema.Nombre</td>
+                <td>@ecosistema.Descripcion</td>
+                <td>@ecosistema.AreaMetrosCuadrados</td>
+                <td>@ecosistema.Coordenadas.Latitud</td>
+                <td>@ecosistema.Coordenadas.Longitud</td>
+                <td>@ecosistema.EstadoConservacion.Nombre</td>
+                <td><img class="img-thumbnail" src="~/imagenes/ecosistemas/@ecosistema.Imagen.RutaImagen"></td>
+                }
+                </ul>
+                </td>*@
 
 
                 </tr>

@@ -279,12 +279,17 @@ namespace MVC.Controllers
             try
             {
                 IEnumerable<Especie> _especies = _repoEspecie.GetAll();//Obtener todas las especies
-                var ViewModel = _especies.Select(e => new ConsultarEspeciesModel(e)).ToList(); // Convertir a ViewModel
-                if (ViewModel.Count == 0)
+                if (_especies.Any())
                 {
-                    TempData["Error"] = "No existen registros válidos";
+                    return View(_especies);
                 }
-                return View(ViewModel);
+                else
+                {
+                    TempData["Error"] = "No se encontraron especies";
+                    return RedirectToAction("Index");
+                }
+                //var ViewModel = _especies.Select(e => new ConsultarEspeciesModel(e)).ToList(); // Convertir a ViewModel
+
             }
             catch (Exception e)
             {

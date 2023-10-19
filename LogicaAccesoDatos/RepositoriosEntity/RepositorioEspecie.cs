@@ -60,7 +60,15 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         {
             try
             {
-                return _db.Especies.ToList();
+                return _db.Especies
+                    .Include(e => e.Ecosistemas)
+                        .ThenInclude(e => e.EstadoConservacion)
+                    .Include(e => e.Amenazas)
+                    .Include(e => e.AtributosFisicos)
+                    .Include(e => e.Imagen)
+                    .Include(e => e.Nombre)
+                    .Include(e => e.EstadoConservacion)
+                    .ToList();
 
             }
             catch (Exception)
