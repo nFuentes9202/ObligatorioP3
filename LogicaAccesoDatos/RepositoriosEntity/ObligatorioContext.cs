@@ -45,23 +45,26 @@ namespace LogicaAccesoDatos.RepositoriosEntity
             .HasValue<UsuarioAdmin>("Admin")
             .HasValue<UsuarioAutorizado>("Autorizado");
 
-            // Precarga para Amenazas
-            modelBuilder.Entity<Amenaza>().HasData(
-                new Amenaza { Id = 1, Descripcion = "Caza furtiva", GradoPeligrosidad = 8 },
-                new Amenaza { Id = 2, Descripcion = "Deforestación", GradoPeligrosidad = 7 }
-            );
 
-            // Precarga para EstadosConservacion
-            modelBuilder.Entity<EstadoConservacion>().HasData(
-                new EstadoConservacion { Id = 1, Nombre = "En peligro", RangoSeguridadMinimo = 1, RangoSeguridadMaximo = 3 },
-                new EstadoConservacion { Id = 2, Nombre = "Vulnerable", RangoSeguridadMinimo = 4, RangoSeguridadMaximo = 7 }
-            );
+            //Adios precargas en código, fueron muy utiles :(
 
-            // Precarga para Paises
-            modelBuilder.Entity<Pais>().HasData(
-                new Pais { Id = 1, CodigoAlpha3 = "ARG", Nombre = "Argentina" },
-                new Pais { Id = 2, CodigoAlpha3 = "BRA", Nombre = "Brasil" }
-            );
+            //// Precarga para Amenazas
+            //modelBuilder.Entity<Amenaza>().HasData(
+            //    new Amenaza { Id = 1, Descripcion = "Caza furtiva", GradoPeligrosidad = 8 },
+            //    new Amenaza { Id = 2, Descripcion = "Deforestación", GradoPeligrosidad = 7 }
+            //);
+
+            //// Precarga para EstadosConservacion
+            //modelBuilder.Entity<EstadoConservacion>().HasData(
+            //    new EstadoConservacion { Id = 1, Nombre = "En peligro", RangoSeguridadMinimo = 1, RangoSeguridadMaximo = 3 },
+            //    new EstadoConservacion { Id = 2, Nombre = "Vulnerable", RangoSeguridadMinimo = 4, RangoSeguridadMaximo = 7 }
+            //);
+
+            //// Precarga para Paises
+            //modelBuilder.Entity<Pais>().HasData(
+            //    new Pais { Id = 1, CodigoAlpha3 = "ARG", Nombre = "Argentina" },
+            //    new Pais { Id = 2, CodigoAlpha3 = "BRA", Nombre = "Brasil" }
+            //);
 
 
             modelBuilder.Entity<UsuarioAdmin>().HasData(
