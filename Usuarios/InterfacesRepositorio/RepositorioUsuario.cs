@@ -7,7 +7,7 @@ using Usuarios.Entidades;
 
 namespace Usuarios.InterfacesRepositorio
 {
-    public class IRepositorioUsuario : IRepositorio<Usuario>
+    public class RepositorioUsuario : IRepositorio<Usuario>
     {
         public void Add(Usuario obj)
         {

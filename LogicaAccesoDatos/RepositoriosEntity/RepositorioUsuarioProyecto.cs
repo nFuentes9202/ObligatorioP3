@@ -10,10 +10,10 @@ using Usuarios.InterfacesRepositorio;
 
 namespace LogicaAccesoDatos.RepositoriosEntity
 {
-    public class RepositorioUsuario : IRepositorioUsuario
+    public class RepositorioUsuarioProyecto : Usuarios.InterfacesRepositorio.RepositorioUsuario
     {
         private ObligatorioContext _db;
-        public RepositorioUsuario(ObligatorioContext db)
+        public RepositorioUsuarioProyecto(ObligatorioContext db)
         {
             _db = db;
         }

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddScoped<RepositorioEcosistema>();
-builder.Services.AddScoped<RepositorioUsuario>();
+builder.Services.AddScoped<RepositorioUsuarioProyecto>();
 builder.Services.AddScoped<RepositorioAmenaza>();
 builder.Services.AddScoped<RepositorioEstadosConservacion>();
 builder.Services.AddScoped<RepositorioConfiguracion>();

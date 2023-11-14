@@ -10,9 +10,9 @@ namespace MVC.Controllers
 {
     public class UsuarioController : Controller
     {
-        private readonly RepositorioUsuario _repoUsuario;
+        private readonly LogicaAccesoDatos.RepositoriosEntity.RepositorioUsuarioProyecto _repoUsuario;
 
-        public UsuarioController(RepositorioUsuario repoUsuario)
+        public UsuarioController(LogicaAccesoDatos.RepositoriosEntity.RepositorioUsuarioProyecto repoUsuario)
         {
             _repoUsuario = repoUsuario;
         }
