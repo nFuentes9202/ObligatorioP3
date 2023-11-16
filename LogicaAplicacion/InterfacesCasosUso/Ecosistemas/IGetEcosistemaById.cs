@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace LogicaAplicacion.InterfacesCasosUso.Ecosistemas
 {
-    // TODO Agregar items a interfaz
-    public interface IAltaEcosistema
+    public interface IGetEcosistemaById
     {
-        void Alta(EcosistemaAltaDTO ecoAltaDTO);
+        public EcosistemaListadoDTO GetEcosistema(int? id);
     }
 }

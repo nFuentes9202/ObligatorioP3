@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.InterfacesCasosUso.Ecosistemas;
+﻿using Dominio.Entidades;
+using LogicaAplicacion.InterfacesCasosUso.Ecosistemas;
 using Microsoft.AspNetCore.Mvc;
 using Obligatorio.WebApi.DTOS.Ecosistemas;
 
@@ -10,30 +11,71 @@ namespace Obligatorio.WebApi.Controllers
     [ApiController]
     public class EcosistemaController : ControllerBase
     {
-        private IGetEcosistemas _get;
-        public EcosistemaController(IGetEcosistemas get) {
-            _get = get;
+        private IGetEcosistemas _useCaseGetAll;
+        private IAltaEcosistema _useCaseAltaEcosistema;
+        private IGetEcosistemaById _useCaseGetEcosistema;
+        public EcosistemaController(IGetEcosistemas get, IAltaEcosistema altaEco, IGetEcosistemaById useCaseGetEcosistema) {
+            _useCaseGetAll = get;
+            _useCaseAltaEcosistema = altaEco;
+            _useCaseGetEcosistema = useCaseGetEcosistema;
         }
         // GET: api/<EcosistemaController>
         [HttpGet]
-        public IActionResult Get()
+        public ActionResult<EcosistemaListadoDTO> GetEcosistemas()
         {
-            var ecosistemas = _get.GetAll();
-            var ecosistemasDTO = MapeoEcosistema.FromLista(ecosistemas);
-            return Ok(ecosistemasDTO);
+            try
+            {
+                var ecosistemas = _useCaseGetAll.GetEcosistemasDTO();
+                if(ecosistemas == null)
+                {
+                    return NotFound();
+                }
+                return Ok(ecosistemas);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
         }
 
-        // GET api/<EcosistemaController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetById")] //Se  pone nombre a la ruta para usarla en el CreatedAtRoute
+        public ActionResult<EcosistemaListadoDTO> Get(int? id)
         {
-            return "value";
+            try
+            {
+                if (id == null)
+                    return BadRequest("Debe proporcionar el id a buscar");
+                var ecosistema = _useCaseGetEcosistema.GetEcosistema(id);
+                if (ecosistema == null)
+                    return NotFound($"No existe el autor con el id {id}");
+                return Ok(ecosistema);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
         // POST api/<EcosistemaController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<Ecosistema>Post([FromBody] EcosistemaAltaDTO ecosistemaDTO)
         {
+            if(ecosistemaDTO == null)
+            {
+                return BadRequest("Debe proporcionar el ecosistema a dar de alta");
+            }
+            try
+            {
+                _useCaseAltaEcosistema.Alta(ecosistemaDTO);
+                return CreatedAtRoute("GetById", new {id = ecosistemaDTO.Id}, ecosistemaDTO);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
         }
 
         // PUT api/<EcosistemaController>/5

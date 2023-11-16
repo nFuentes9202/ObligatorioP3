@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\imagenes\**" />
+    <Content Remove="wwwroot\imagenes\**" />
+    <EmbeddedResource Remove="wwwroot\imagenes\**" />
+    <None Remove="wwwroot\imagenes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
       <PrivateAssets>all</PrivateAssets>
@@ -24,11 +31,6 @@
     <ProjectReference Include="..\Dominio\Dominio.csproj" />
     <ProjectReference Include="..\LogicaAccesoDatos\LogicaAccesoDatos.csproj" />
     <ProjectReference Include="..\Usuarios\Usuarios.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\imagenes\ecosistemas\" />
-    <Folder Include="wwwroot\imagenes\fotos\" />
   </ItemGroup>
 
 </Project>

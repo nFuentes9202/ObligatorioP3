@@ -1,4 +1,5 @@
 ﻿using Dominio.Entidades;
+using Obligatorio.WebApi.DTOS.Ecosistemas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace LogicaAplicacion.InterfacesCasosUso.Ecosistemas
     // TODO Agregar items a interfaz
     public interface IGetEcosistemas
     {
-        public IEnumerable<Ecosistema> GetAll();
+        public IEnumerable<EcosistemaListadoDTO> GetEcosistemasDTO();
 
-        public IEnumerable<Ecosistema> Filtrar();
+        public IEnumerable<EcosistemaListadoDTO> Filtrar();
     }
 }
