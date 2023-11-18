@@ -1,6 +1,8 @@
 using Dominio.InterfacesRepositorio;
 using LogicaAccesoDatos.RepositoriosEntity;
+using LogicaAplicacion.CasosUso.Configuracion;
 using LogicaAplicacion.CasosUso.Ecosistemas;
+using LogicaAplicacion.InterfacesCasosUso.Configuracion;
 using LogicaAplicacion.InterfacesCasosUso.Ecosistemas;
 using Microsoft.EntityFrameworkCore;
 using Usuarios.InterfacesRepositorio;
@@ -27,6 +29,7 @@ builder.Services.AddScoped<IRepositorioEspecie, RepositorioEspecie>();
 builder.Services.AddScoped<IGetEcosistemas,GetEcosistemas>();
 builder.Services.AddScoped<IAltaEcosistema, AltaEcosistema>();
 builder.Services.AddScoped<IGetEcosistemaById, GetEcosistemaById>();
+builder.Services.AddScoped<IModificarConfiguracion, ModificarConfiguracion>();
 builder.Services.AddDbContext<ObligatorioContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StringConexion")));
 
