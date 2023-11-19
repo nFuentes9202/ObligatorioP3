@@ -9,5 +9,6 @@ namespace Dominio.InterfacesRepositorio
 {
     public interface IRepositorioAmenaza: IRepositorio<Amenaza>
     {
+        public IEnumerable<Amenaza> ObtenerAmenazasSegunId(IEnumerable<int> amenazasSeleccionadasIds);
     }
 }

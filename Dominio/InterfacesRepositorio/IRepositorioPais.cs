@@ -9,5 +9,6 @@ namespace Dominio.InterfacesRepositorio
 {
     public interface IRepositorioPais:IRepositorio<Pais>
     {
+        public IEnumerable<Pais> ObtenerPaisesSegunId(IEnumerable<int> paisId);
     }
 }
