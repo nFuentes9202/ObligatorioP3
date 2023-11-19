@@ -14,10 +14,13 @@ namespace Obligatorio.WebApi.Controllers
         private IGetEcosistemas _useCaseGetAll;
         private IAltaEcosistema _useCaseAltaEcosistema;
         private IGetEcosistemaById _useCaseGetEcosistema;
-        public EcosistemaController(IGetEcosistemas get, IAltaEcosistema altaEco, IGetEcosistemaById useCaseGetEcosistema) {
+        private IBorrarEcosistema _useCaseBorrarEcosistema;
+        public EcosistemaController(IGetEcosistemas get, IAltaEcosistema altaEco, IGetEcosistemaById useCaseGetEcosistema, IBorrarEcosistema useCaseBorrarEcosistema = null)
+        {
             _useCaseGetAll = get;
             _useCaseAltaEcosistema = altaEco;
             _useCaseGetEcosistema = useCaseGetEcosistema;
+            _useCaseBorrarEcosistema = useCaseBorrarEcosistema;
         }
         // GET: api/<EcosistemaController>
         [HttpGet]
@@ -86,8 +89,22 @@ namespace Obligatorio.WebApi.Controllers
 
         // DELETE api/<EcosistemaController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int? id)
         {
+            if(id == null)
+            {
+                return BadRequest("Debe proporcionar la id del ecosistema");
+            }
+            try
+            {
+                _useCaseBorrarEcosistema.Eliminar(id);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
         }
     }
 }

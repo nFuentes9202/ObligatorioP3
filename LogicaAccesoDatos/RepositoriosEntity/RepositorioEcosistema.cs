@@ -42,8 +42,12 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         {
             throw new NotImplementedException();
         }
-        public bool Delete(int id)
+        public bool Delete(int? id)
         {
+            if(id == null)
+            {
+                throw new EcosistemaException("El id no puede ser nulo");
+            }
             try
             {
                 var Ecosistema = _db.Ecosistemas.Find(id);
@@ -65,6 +69,10 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public Ecosistema FindById(int? id)
         {
+            if(id == null)
+            {
+                throw new EcosistemaException("El id no puede ser nulo");
+            }
             Ecosistema es = _db.Ecosistemas
                 .Include(es => es.Especies)
                 .Include(es => es.Amenazas)
@@ -111,8 +119,12 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 throw new Exception("No se pudo modificar el ecosistema");
             }
         }
-        public bool SePuedeBorrarEcosistema(int id)
+        public bool SePuedeBorrarEcosistema(int? id)
         {
+            if(id == null)
+            {
+                throw new EcosistemaException("El id no puede ser nulo");
+            }
             var ecosistema = _db.Ecosistemas.Include(e => e.Especies).FirstOrDefault(e => e.Id == id);
             if (ecosistema.Especies.Count == 0)
             {

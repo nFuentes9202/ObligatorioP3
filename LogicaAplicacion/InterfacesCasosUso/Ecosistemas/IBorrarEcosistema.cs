@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace LogicaAplicacion.InterfacesCasosUso.Ecosistemas
 {
     // TODO Agregar items a interfaz
-    internal interface IDeleteEcosistema
+    public interface IBorrarEcosistema
     {
+        public void Eliminar(int? id);
     }
 }

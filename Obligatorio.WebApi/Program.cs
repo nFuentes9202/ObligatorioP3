@@ -30,6 +30,7 @@ builder.Services.AddScoped<IGetEcosistemas,GetEcosistemas>();
 builder.Services.AddScoped<IAltaEcosistema, AltaEcosistema>();
 builder.Services.AddScoped<IGetEcosistemaById, GetEcosistemaById>();
 builder.Services.AddScoped<IModificarConfiguracion, ModificarConfiguracion>();
+builder.Services.AddScoped<IBorrarEcosistema, BorrarEcosistema>();
 builder.Services.AddDbContext<ObligatorioContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StringConexion")));
 

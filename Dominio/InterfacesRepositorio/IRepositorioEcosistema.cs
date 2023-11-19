@@ -9,5 +9,7 @@ namespace Dominio.InterfacesRepositorio
 {
     public interface IRepositorioEcosistema:IRepositorio<Ecosistema>
     {
+        public bool SePuedeBorrarEcosistema(int? id);
+        public bool Delete(int? id);
     }
 }
