@@ -28,5 +28,7 @@ namespace MVC.Models
             Longitud = ecosistema.Coordenadas?.Longitud ?? 0;
             EstadoConservacionNombre = ecosistema.EstadoConservacion?.Nombre ?? "Desconocido";
         }
+
+        public EcosistemaModel() { }
     }
 }

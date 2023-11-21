@@ -14,6 +14,7 @@ namespace Obligatorio.WebApi.DTOS.Ecosistemas
         public string DescripcionImagen { get; set; }
         public string EstadoConservacionNombre { get; set; }
 
+
         public EcosistemaListadoDTO(Ecosistema ecosistema)
         {
             Id = ecosistema.Id;

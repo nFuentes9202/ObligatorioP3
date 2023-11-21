@@ -11,21 +11,40 @@ using MVC.Models;
 using MVC.Models.Conversiones;
 using Microsoft.Data.SqlClient;
 using Dominio.ExcepcionesEntidades;
+using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MVC.Controllers
 {
     public class EcosistemasController : Controller
     {
         private readonly RepositorioEcosistema _repoEcosistema;
-
         private readonly RepositorioAmenaza _repoAmenaza;
         private IWebHostEnvironment _environment;
         private readonly RepositorioEstadosConservacion _repoEstadosConservacion;
         private readonly RepositorioPais _repoPaises;
         private readonly RepositorioConfiguracion _repoConfiguracion;
 
+        private static HttpClient _cli = new HttpClient();
+
+        JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true
+        };
+
+
+
         public EcosistemasController(RepositorioEcosistema repoEcosistema, RepositorioAmenaza repoAmenaza, IWebHostEnvironment environment, RepositorioEstadosConservacion repositorioEstadosConservacion, RepositorioPais repoPais, RepositorioConfiguracion repoConfiguracion)
         {
+            if (_cli.BaseAddress == null)
+            {
+                _cli.BaseAddress = new Uri("https://localhost:7082/api/Ecosistema");
+            }
+
+            _cli.DefaultRequestHeaders.Accept.Clear();
+            _cli.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
             _repoEcosistema = repoEcosistema;
             _repoAmenaza = repoAmenaza;
             _environment = environment;
@@ -37,15 +56,38 @@ namespace MVC.Controllers
         // GET: Ecosistemas
         public ActionResult Index()
         {
+
             try
             {
-                IEnumerable<Ecosistema> _ecosistemas = _repoEcosistema.GetAll();
-                var ViewModel = _ecosistemas.Select(e => new EcosistemaModel(e)).ToList(); // Convertir a ViewModel
-                if (ViewModel.Count == 0)
+                IEnumerable<EcosistemaModel> listaEcosistemas = new List<EcosistemaModel>();
+
+                var respuesta = _cli.GetAsync(_cli.BaseAddress);
+
+                respuesta.Wait();
+
+                var resultado = respuesta.Result;
+
+                if (resultado.IsSuccessStatusCode)
                 {
-                    TempData["Error"] = "No existen registros válidos";
+                    string contenidoPublicaciones = resultado.Content.ReadAsStringAsync().Result;
+                    listaEcosistemas = JsonSerializer.Deserialize<List<EcosistemaModel>>(contenidoPublicaciones, _serializerOptions);
+
+                    if (listaEcosistemas != null && listaEcosistemas.Count() > 0)
+                    {
+
+                        return View(listaEcosistemas);
+
+                    }
+
+                    else
+                    {
+                        TempData["Error"] = "No hay resultado";
+                        return View(listaEcosistemas);
+                    }
                 }
-                return View(ViewModel);
+                string contenidoError = resultado.Content.ReadAsStringAsync().Result;
+                TempData["Error"] = $"Error: {contenidoError}";
+                return View(listaEcosistemas);
             }
             catch (Exception e)
             {
