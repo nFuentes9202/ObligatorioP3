@@ -1,4 +1,4 @@
-﻿using Obligatorio.WebApi.DTOS.Ecosistemas;
+﻿using Obligatorio.WebApi.DTOS.Especies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,6 @@ namespace LogicaAplicacion.InterfacesCasosUso.Especies
     // TODO Agregar items a interfaz
     public interface IAltaEspecie
     {
-        //public void Alta(EspecieAltaDTO especieAltaDTO);
+        void Alta(EspecieAltaDTO especieAltaDTO);
     }
 }

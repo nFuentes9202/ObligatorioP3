@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicaAplicacion.InterfacesCasosUso.Especies
+namespace LogicaAplicacion.CasosUso.Especies
 {
-    // TODO Agregar items a interfaz
-    public interface IAsignarEspecie
+    public class GetEspecies
     {
     }
 }

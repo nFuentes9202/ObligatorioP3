@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dominio.Entidades;
+using Obligatorio.WebApi.DTOS.Especies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +9,8 @@ using System.Threading.Tasks;
 namespace LogicaAplicacion.InterfacesCasosUso.Especies
 {
     // TODO Agregar items a interfaz
-    internal interface IGetEspecies
+    public interface IGetEspecies
     {
+        public IEnumerable<EspecieListadoDTO> GetEspeciesDTO();
     }
 }

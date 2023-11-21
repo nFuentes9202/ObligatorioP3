@@ -48,5 +48,10 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         {
             throw new NotImplementedException();
         }
+
+        IEnumerable<EstadoConservacion> IRepositorioEstadoConservacion.ObtenerEstadosConservacionSegunId(IEnumerable<int> estadosConservacionSeleccionadosIds)
+        {
+            return _db.EstadosConservacion.Where(e => estadosConservacionSeleccionadosIds.Contains(e.Id)).ToList();
+        }
     }
 }
