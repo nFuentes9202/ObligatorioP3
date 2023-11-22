@@ -8,6 +8,12 @@ using LogicaAplicacion.InterfacesCasosUso.Especies;
 using LogicaAplicacion.CasosUso.Especies;
 using Microsoft.EntityFrameworkCore;
 using Usuarios.InterfacesRepositorio;
+using LogicaAplicacion.InterfacesCasosUso.Paises;
+using LogicaAplicacion.CasosUso.Paises;
+using LogicaAplicacion.InterfacesCasosUso.Amenazas;
+using LogicaAplicacion.CasosUso.Amenazas;
+using LogicaAplicacion.InterfacesCasosUso.EstadosConservacion;
+using LogicaAplicacion.CasosUso.EstadosConservacion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +40,11 @@ builder.Services.AddScoped<IGetEcosistemaById, GetEcosistemaById>();
 builder.Services.AddScoped<IModificarConfiguracion, ModificarConfiguracion>();
 builder.Services.AddScoped<IBorrarEcosistema, BorrarEcosistema>();
 builder.Services.AddScoped<IAltaEspecie, AltaEspecie>();
+builder.Services.AddScoped<IGetPaises, GetPaises>();
+builder.Services.AddScoped<IGetAmenazas, GetAmenazas>();
+builder.Services.AddScoped<IGetEstadosConservacion, GetEstadosConservacion>();
+
+
 builder.Services.AddDbContext<ObligatorioContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StringConexion")));
 

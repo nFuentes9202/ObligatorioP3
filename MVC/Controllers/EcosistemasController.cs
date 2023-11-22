@@ -101,26 +101,70 @@ namespace MVC.Controllers
 
         public IActionResult Create()
         {
-            if (!ModelState.IsValid)
+            var ecosistemaAltaModel = new EcosistemaAltaModel();
+            try
             {
-                return View();
+                CargarListaDesplegables(ecosistemaAltaModel);
             }
-            IEnumerable<AmenazaModel> amenazasModel = LlenarAmenazas();
-            IEnumerable<EstadoConservacionModel> estadosModel = LlenarEstadosConservacion();
-            IEnumerable<PaisModel> paisesModel = LlenarPaises();
-            SelectList amenazs = new SelectList(amenazasModel, "Id", "Descripcion");
-            SelectList estados = new SelectList(estadosModel, "Id", "Nombre");
-            SelectList paises = new SelectList(paisesModel, "Id", "Nombre");
-            EcosistemaAltaModel ecosistemaAltaModel = new EcosistemaAltaModel()
+            catch (Exception)
             {
-                TodasLasAmenazas = amenazs,
-                TodosLosEstadosConservacion = estados,
-                TodosLosPaises = paises
-            };
+
+                ViewData["Error"] = "Problemas al cargar las listas desplegables";
+            }
 
             return View(ecosistemaAltaModel);
         }
 
+        private void CargarListaDesplegables(EcosistemaAltaModel ecoAltaModel)
+        {
+            try
+            {
+                IEnumerable<PaisModel> listaPaises = new List<PaisModel>();
+                IEnumerable<AmenazaModel> listaAmenazas = new List<AmenazaModel>();
+                IEnumerable<EstadoConservacionModel> listaEstadoConservacion = new List<EstadoConservacionModel>();
+
+                //Cargamos los paises
+                var respuesta = _cli.GetAsync(new Uri(_cli.BaseAddress, "paises"));
+                respuesta.Wait();
+                var resultado = respuesta.Result;
+                if (resultado.IsSuccessStatusCode)
+                {
+                    string contenidoPaises = resultado.Content.ReadAsStringAsync().Result;
+                    listaPaises = JsonSerializer.Deserialize<IEnumerable<PaisModel>>(contenidoPaises, _serializerOptions);
+                    SelectList paises = new SelectList(listaPaises, "Id", "Nombre");
+                    ecoAltaModel.TodosLosPaises = paises;
+                }
+
+                //Cargamos las amenazas
+                respuesta = _cli.GetAsync(new Uri(_cli.BaseAddress, "amenazas"));
+                respuesta.Wait();
+                resultado = respuesta.Result;
+                if (resultado.IsSuccessStatusCode)
+                {
+                    string contenidoAmenazas = resultado.Content.ReadAsStringAsync().Result;
+                    listaAmenazas = JsonSerializer.Deserialize<IEnumerable<AmenazaModel>>(contenidoAmenazas, _serializerOptions);
+                    SelectList amenazas = new SelectList(listaPaises, "Id", "Nombre");
+                    ecoAltaModel.TodasLasAmenazas = amenazas;
+                }
+
+                //Cargamos los estados de conservación
+                respuesta = _cli.GetAsync(new Uri(_cli.BaseAddress, "estados"));
+                respuesta.Wait();
+                resultado = respuesta.Result;
+                if (resultado.IsSuccessStatusCode)
+                {
+                    string contenidoEstados = resultado.Content.ReadAsStringAsync().Result;
+                    listaEstadoConservacion = JsonSerializer.Deserialize<IEnumerable<EstadoConservacionModel>>(contenidoEstados, _serializerOptions);
+                    SelectList estados = new SelectList(listaPaises, "Id", "Nombre");
+                    ecoAltaModel.TodosLosEstadosConservacion = estados;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         private IEnumerable<PaisModel> LlenarPaises()
         {
             IEnumerable<Pais> paises = _repoPaises.GetAll();
