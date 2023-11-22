@@ -12,6 +12,7 @@ namespace Obligatorio.WebApi.Controllers
         private IAltaEspecie _useCaseAltaEspecie;
         private IAsignarEspecie _useCaseAsignarEspecie;
         private IGetEspecies _useCaseGetEspecie;
+        private IGetEspecieById _useCaseGetEspecieById;
 
         public EspecieController(IAltaEspecie useCaseAltaEspecie, IAsignarEspecie useCaseAsignarEspecie, IGetEspecies useCaseGetEspecie)
         {
@@ -19,7 +20,7 @@ namespace Obligatorio.WebApi.Controllers
             _useCaseAsignarEspecie = useCaseAsignarEspecie;
             _useCaseGetEspecie = useCaseGetEspecie;
         }
-        /*
+        
         //GET: api/<EspecieController>
         [HttpGet]
         public ActionResult<EspecieListadoDTO> GetEspecies()
@@ -38,7 +39,7 @@ namespace Obligatorio.WebApi.Controllers
 
                 return StatusCode(500, e.Message);
             }
-        }*/
+        }
 
         // POST api/<EspecieController>
         [HttpPost]
@@ -58,6 +59,25 @@ namespace Obligatorio.WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("{id}", Name = "GetEspecieById")] //Se  pone nombre a la ruta para usarla en el CreatedAtRoute
+        public ActionResult<EspecieListadoDTO> Get(int? id)
+        {
+            try
+            {
+                if (id == null)
+                    return BadRequest("Debe proporcionar el id a buscar");
+                var especie = _useCaseGetEspecieById.GetEspecie(id);
+                if (especie == null)
+                    return NotFound($"No existe la especie con el id {id}");
+                return Ok(especie);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
         }
     }
 }

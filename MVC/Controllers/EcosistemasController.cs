@@ -143,7 +143,7 @@ namespace MVC.Controllers
                 {
                     string contenidoAmenazas = resultado.Content.ReadAsStringAsync().Result;
                     listaAmenazas = JsonSerializer.Deserialize<IEnumerable<AmenazaModel>>(contenidoAmenazas, _serializerOptions);
-                    SelectList amenazas = new SelectList(listaPaises, "Id", "Nombre");
+                    SelectList amenazas = new SelectList(listaPaises, "Id", "Nombre");//esta llamando a listaPaises deberia ir listaAmenazas
                     ecoAltaModel.TodasLasAmenazas = amenazas;
                 }
 
@@ -155,7 +155,7 @@ namespace MVC.Controllers
                 {
                     string contenidoEstados = resultado.Content.ReadAsStringAsync().Result;
                     listaEstadoConservacion = JsonSerializer.Deserialize<IEnumerable<EstadoConservacionModel>>(contenidoEstados, _serializerOptions);
-                    SelectList estados = new SelectList(listaPaises, "Id", "Nombre");
+                    SelectList estados = new SelectList(listaPaises, "Id", "Nombre");//esta llamando a listaPaises deberia ir listaEstadoConservacion
                     ecoAltaModel.TodosLosEstadosConservacion = estados;
                 }
             }

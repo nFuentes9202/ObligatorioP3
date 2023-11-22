@@ -22,5 +22,10 @@ namespace Obligatorio.WebApi.DTOS.Especies
             };
 
         }
+
+        internal static EspecieListadoDTO EspecieToEspecieDTO(Especie especie)
+        {
+            return new EspecieListadoDTO(especie);
+        }
     }
 }

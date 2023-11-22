@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MVC.Models;
 using MVC.Models.Conversiones;
+using System.Text.Json;
 
 namespace MVC.Controllers
 {
@@ -17,8 +18,24 @@ namespace MVC.Controllers
         private readonly RepositorioEstadosConservacion _repoEstadosConservacion;
         private readonly RepositorioConfiguracion _repoConfiguracion;
 
+        private static HttpClient _cli = new HttpClient();//Cliente http para hacer las peticiones al web api
+
+        JsonSerializerOptions _serializerOptions = new JsonSerializerOptions()//Opciones para el serializador de json
+        {
+            PropertyNameCaseInsensitive = true,//Ignorar mayúsculas y minúsculas
+            WriteIndented = true//Dar formato al json
+        };
+
         public EspeciesController(RepositorioEcosistema repoEcosistema, RepositorioEspecie repoEspecie, RepositorioAmenaza repoAmenaza, IWebHostEnvironment environment, RepositorioEstadosConservacion repoEstadosConservacion, RepositorioConfiguracion repoConfiguracion)
         {
+            if(_cli.BaseAddress == null)//Si la dirección base del cliente es nula
+            {
+                _cli.BaseAddress = new Uri("https://localhost:44374/api/Especie");//Asignar la dirección base
+            }
+
+            _cli.DefaultRequestHeaders.Accept.Clear();//Limpiar los headers
+            _cli.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));//Agregar el header de json
+
             _repoEcosistema = repoEcosistema;
             _repoEspecie = repoEspecie;
             _repoAmenaza = repoAmenaza;
@@ -27,14 +44,14 @@ namespace MVC.Controllers
             _repoConfiguracion = repoConfiguracion;
         }
 
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             return View();
-        }
+        }*/
 
         public IActionResult Create()
         {
-            IEnumerable<AmenazaModel> amenazasModel = LlenarAmenazas();
+            /*IEnumerable<AmenazaModel> amenazasModel = LlenarAmenazas();
             IEnumerable<EstadoConservacionModel> estadosModel = LlenarEstadosConservacion();
             IEnumerable<EcosistemaModel> ecosistemaModels = LlenarEcosistemas();
             SelectList amenazs = new SelectList(amenazasModel, "Id", "Descripcion");
@@ -46,12 +63,81 @@ namespace MVC.Controllers
                 TodasLasAmenazas = amenazs,
                 TodosLosEstadosConservacion = estados,
                 TodosLosEcosistemas = ecosistemas
-            };
+            };*/
+            var especieAltaModel = new EspecieAltaModel();
+            try
+            {
+                CargarListaDesplegables(especieAltaModel);
+            }catch(Exception)
+            {
+                ViewData["Error"] = "Problemas al cargar las listas desplegables";
+            }
 
             return View(especieAltaModel);
         }
 
-        private IEnumerable<EcosistemaModel> LlenarEcosistemas()
+        private void CargarListaDesplegables(EspecieAltaModel especieAltaModel)
+        {
+            try
+            {
+                IEnumerable<AmenazaModel> listaAmenazas = new List<AmenazaModel>();
+                IEnumerable<EstadoConservacionModel> listaEstadosConservacion = new List<EstadoConservacionModel>();
+                IEnumerable<EcosistemaModel> listaEcosistemas = new List<EcosistemaModel>();
+
+                //Cargar amenazas
+                var responseAmenazas = _cli.GetAsync(new Uri(_cli.BaseAddress, "amenazas"));//Obtener la respuesta de la petición
+                responseAmenazas.Wait();//Esperar a que termine la petición
+                var resultAmenazas = responseAmenazas.Result;//Obtener el resultado de la petición
+                if (resultAmenazas.IsSuccessStatusCode)//Si la petición fue exitosa
+                {
+                    string contenidoAmenazas = resultAmenazas.Content.ReadAsStringAsync().Result;//Obtener el contenido de la respuesta
+                    listaAmenazas = JsonSerializer.Deserialize<IEnumerable<AmenazaModel>>(contenidoAmenazas, _serializerOptions);//Deserializar el contenido
+                    SelectList amenazas = new SelectList(listaAmenazas, "Id", "Descripcion");//Crear la lista desplegable
+                    especieAltaModel.TodasLasAmenazas = amenazas;//Asignar la lista desplegable al modelo
+                }
+
+                //Cargar estados de conservación
+                var responseEstadosConservacion = _cli.GetAsync(new Uri(_cli.BaseAddress, "estados"));//Obtener la respuesta de la petición
+                responseEstadosConservacion.Wait();//Esperar a que termine la petición
+                var resultEstadosConservacion = responseEstadosConservacion.Result;//Obtener el resultado de la petición
+                if (resultEstadosConservacion.IsSuccessStatusCode)//Si la petición fue exitosa
+                {
+                    string contenidoEstadosConservacion = resultEstadosConservacion.Content.ReadAsStringAsync().Result;//Obtener el contenido de la respuesta
+                    listaEstadosConservacion = JsonSerializer.Deserialize<IEnumerable<EstadoConservacionModel>>(contenidoEstadosConservacion, _serializerOptions);//Deserializar el contenido
+                    SelectList estadosConservacion = new SelectList(listaEstadosConservacion, "Id", "Nombre");//Crear la lista desplegable
+                    especieAltaModel.TodosLosEstadosConservacion = estadosConservacion;//Asignar la lista desplegable al modelo
+                }
+
+                //Cargar ecosistemas
+                var responseEcosistemas = _cli.GetAsync(new Uri(_cli.BaseAddress, "ecosistemas"));//Obtener la respuesta de la petición
+                responseEcosistemas.Wait();//Esperar a que termine la petición
+                var resultEcosistemas = responseEcosistemas.Result;//Obtener el resultado de la petición
+                if (resultEcosistemas.IsSuccessStatusCode)//Si la petición fue exitosa
+                {
+                    string contenidoEcosistemas = resultEcosistemas.Content.ReadAsStringAsync().Result;//Obtener el contenido de la respuesta
+                    listaEcosistemas = JsonSerializer.Deserialize<IEnumerable<EcosistemaModel>>(contenidoEcosistemas, _serializerOptions);//Deserializar el contenido
+                    SelectList ecosistemasList = new SelectList(listaEcosistemas, "Id", "Nombre");//Crear la lista desplegable
+                    especieAltaModel.TodosLosEcosistemas = ecosistemasList;//Asignar la lista desplegable al modelo
+                }
+
+            }catch(Exception)
+            {
+                throw;
+            }
+
+            /*IEnumerable<AmenazaModel> amenazasModel = LlenarAmenazas();
+            IEnumerable<EstadoConservacionModel> estadosModel = LlenarEstadosConservacion();
+            IEnumerable<EcosistemaModel> ecosistemaModels = LlenarEcosistemas();
+            SelectList amenazs = new SelectList(amenazasModel, "Id", "Descripcion");
+            SelectList estados = new SelectList(estadosModel, "Id", "Nombre");
+            SelectList ecosistemas = new SelectList(ecosistemaModels, "Id", "Nombre");
+
+            especieAltaModel.TodasLasAmenazas = amenazs;
+            especieAltaModel.TodosLosEstadosConservacion = estados;
+            especieAltaModel.TodosLosEcosistemas = ecosistemas;*/
+        }
+
+        /*private IEnumerable<EcosistemaModel> LlenarEcosistemas()
         {
             IEnumerable<Ecosistema> ecosistemas = _repoEcosistema.GetAll();
             IEnumerable<EcosistemaModel> ecosistemaModel = ConversionesEcosistema.FromLista(ecosistemas);
@@ -69,7 +155,7 @@ namespace MVC.Controllers
             IEnumerable<EstadoConservacion> estados = _repoEstadosConservacion.GetAll();
             IEnumerable<EstadoConservacionModel> estadosModel = ConversionesEstadosConservacion.FromLista(estados);
             return estadosModel;
-        }
+        }*/
 
         [HttpPost]
 

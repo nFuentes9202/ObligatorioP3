@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dominio.Entidades;
 
-namespace LogicaAplicacion.CasosUso.DTOS.Especies
+namespace Obligatorio.WebApi.DTOS.Especies
 {
     public class EspecieListadoDTO
     {
