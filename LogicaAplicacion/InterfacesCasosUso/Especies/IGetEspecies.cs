@@ -1,5 +1,5 @@
 ﻿using Dominio.Entidades;
-using LogicaAplicacion.CasosUso.DTOS.Especies;
+//using LogicaAplicacion.CasosUso.DTOS.Especies;
 using Obligatorio.WebApi.DTOS.Especies;
 using System;
 using System.Collections.Generic;
