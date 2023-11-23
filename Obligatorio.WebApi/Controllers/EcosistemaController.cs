@@ -128,7 +128,6 @@ namespace Obligatorio.WebApi.Controllers
         [ProducesResponseType(typeof(Ecosistema), 201)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost("")]
         public ActionResult<Ecosistema>Post([FromBody] EcosistemaAltaDTO ecosistemaDTO)
         {
             if (ecosistemaDTO == null)
@@ -286,7 +285,6 @@ namespace Obligatorio.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete("{id}")]
         public IActionResult Delete(int? id)
         {
             if(id == null)
