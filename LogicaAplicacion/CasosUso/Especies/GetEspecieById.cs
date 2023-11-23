@@ -30,5 +30,10 @@ namespace LogicaAplicacion.CasosUso.Especies
             EspecieListadoDTO especieDTO = especie != null ? MapeoEspecie.EspecieToEspecieDTO(especie) : null;
             return especieDTO;
         }
+
+        public int GetIdSegunNombreCientifico(string nombreCientifico)
+        {
+            return _repoEspecie.GetIdByUnique(nombreCientifico);
+        }
     }
 }

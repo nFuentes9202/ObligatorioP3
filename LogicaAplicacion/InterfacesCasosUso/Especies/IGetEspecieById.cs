@@ -10,5 +10,6 @@ namespace LogicaAplicacion.InterfacesCasosUso.Especies
     public interface IGetEspecieById
     {
         public EspecieListadoDTO GetEspecie(int? id);
+        public int GetIdSegunNombreCientifico(string nombreCientifico);
     }
 }

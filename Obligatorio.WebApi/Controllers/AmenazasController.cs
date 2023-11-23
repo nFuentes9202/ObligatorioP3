@@ -1,6 +1,7 @@
 ﻿using LogicaAplicacion.CasosUso.DTOS.Amenazas;
 using LogicaAplicacion.InterfacesCasosUso.Amenazas;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,7 +17,23 @@ namespace Obligatorio.WebApi.Controllers
         {
             _getAmenazas = getAmenazas;
         }
-        // GET: api/<AmenazasController>
+        /// <summary>
+        /// Obtiene todas las amenazas disponibles.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     GET /Amenazas
+        ///
+        /// </remarks>
+        /// <returns>Una lista de amenazas</returns>
+        /// <response code="200">Devuelve la lista de amenazas</response>
+        /// <response code="404">Si no se encuentran amenazas</response> 
+        /// <response code="500">Si ocurre un error interno en el servidor</response> 
+        [SwaggerOperation(Summary = "Obtiene todas las amenazas disponibles", Description = "Usa _getAmenazas.GetAll() para obtener todas las amenazas")]
+        [ProducesResponseType(typeof(IEnumerable<AmenazaDTO>), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         [HttpGet]
         public ActionResult<AmenazaDTO> Get()
         {
@@ -37,31 +54,6 @@ namespace Obligatorio.WebApi.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-        /*
-        // GET api/<AmenazasController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
-        // POST api/<AmenazasController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<AmenazasController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<AmenazasController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-        */
     }
 }

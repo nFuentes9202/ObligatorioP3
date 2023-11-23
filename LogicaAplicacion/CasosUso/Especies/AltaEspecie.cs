@@ -27,7 +27,7 @@ namespace LogicaAplicacion.CasosUso.Especies
             _repoEstadosConservacion = repoEstadosConservacion;
         }
 
-        public void Alta(EspecieAltaDTO espAltaDTO)
+        public int Alta(EspecieAltaDTO espAltaDTO)
         {
             if(espAltaDTO == null)
             {
@@ -39,6 +39,7 @@ namespace LogicaAplicacion.CasosUso.Especies
             especie.Amenazas = amenazas.ToList();
             especie.Ecosistemas = ecosistemas.ToList();
             _repoEspecie.Add(especie);
+            return especie.Id;
         }
     }
 }

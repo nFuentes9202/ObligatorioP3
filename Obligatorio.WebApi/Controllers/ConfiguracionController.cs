@@ -3,6 +3,7 @@ using LogicaAplicacion.CasosUso.DTOS.Configuracion;
 using LogicaAplicacion.InterfacesCasosUso.Configuracion;
 using Microsoft.AspNetCore.Mvc;
 using Obligatorio.WebApi.DTOS.Ecosistemas;
+using Swashbuckle.AspNetCore.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,8 +24,24 @@ namespace Obligatorio.WebApi.Controllers
             _cuGetConfig = cuGetConfig;
         }
 
-        // GET: api/<EcosistemaController>
+        /// <summary>
+        /// Obtiene la configuración actual del ecosistema.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     GET api/Ecosistema
+        ///
+        /// </remarks>
+        /// <returns>Configuración del ecosistema</returns>
+        /// <response code="200">Devuelve la configuración actual del ecosistema</response>
+        /// <response code="404">Si la configuración no se encuentra</response> 
+        /// <response code="500">Si ocurre un error interno en el servidor</response>
         [HttpGet]
+        [SwaggerOperation(Summary = "Obtiene la configuración actual del ecosistema", Description = "Usa _cuGetConfig.GetConfiguracionPrimera() para obtener la configuración")]
+        [ProducesResponseType(typeof(ConfiguracionDTO), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<ConfiguracionDTO> GetConfiguracion()
         {
             try
@@ -43,9 +60,28 @@ namespace Obligatorio.WebApi.Controllers
             }
         }
 
-        // PUT api/<ConfiguracionController>/5
+        /// <summary>
+        /// Actualiza la configuración específica por su ID.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     PUT api/Configuracion/1
+        ///     {
+        ///        "id": 1,
+        ///        "nombre": "Nueva Configuración",
+        ///        "valor": "Valor"
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="id">ID de la configuración a actualizar</param>
+        /// <param name="configDTO">Datos de la configuración a actualizar</param>
+        /// <returns>Configuración actualizada</returns>
+        /// <response code="200">Si la configuración se actualiza correctamente</response>
+        /// <response code="400">Si los datos de entrada son inválidos o no coinciden</response>
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ConfiguracionDTO))]
+        [SwaggerOperation(Summary = "Actualiza la configuración específica por su ID", Description = "Usa _cuModificarConfig.Modificar() para actualizar la configuración")]
+        [ProducesResponseType(typeof(ConfiguracionDTO), 200)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<ConfiguracionValidaciones> Put(int? id, [FromBody] ConfiguracionDTO configDTO)
         {

@@ -189,5 +189,30 @@ namespace LogicaAccesoDatos.RepositoriosEntity
                 .ToList();
         }
 
+        public void Update(int id, string ruta)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetIdByUnique(string unique)
+        {
+            try
+            {
+                var especie = _db.Especies.FirstOrDefault(e => e.Nombre.NombreCientifico.ToLower() == unique.ToLower());
+                if(especie != null)
+                {
+                    return especie.Id;
+                }
+                else
+                {
+                    throw new EspecieException("No se encontro la especie segun el nombre cientifico");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Obligatorio.WebApi.DTOS.Ecosistemas;
+﻿using Dominio.Entidades;
+using Obligatorio.WebApi.DTOS.Ecosistemas;
 using Obligatorio.WebApi.DTOS.Especies;
 
 namespace Obligatorio.WebApi.DTOS.ConversionesDTO
@@ -22,6 +23,18 @@ namespace Obligatorio.WebApi.DTOS.ConversionesDTO
                 AmenazasSeleccionadasIds = especie.AmenazasSeleccionadasIds,
                 EcosistemasSeleccionadosIds = especie.EcosistemasSeleccionadosIds
             };
+        }
+        public static Especie DTOToEspecie(EspecieAltaDTO ecpecieAltaModel)
+        {
+            return new Especie
+            {
+                Descripcion = ecpecieAltaModel.Descripcion,
+                Nombre = new Dominio.Entidades.ValueObjects.Especie.Nombre(ecpecieAltaModel.NombreVulgar, ecpecieAltaModel.NombreCientifico),
+                AtributosFisicos = new Dominio.Entidades.ValueObjects.Especie.AtributosFisicos(ecpecieAltaModel.RangoLongitudCm, ecpecieAltaModel.RangoPesoKg),
+                Imagen = new Dominio.Entidades.ValueObjects.Especie.Imagen(ecpecieAltaModel.DescripcionImagen, ecpecieAltaModel.NombreVulgar, ecpecieAltaModel.ImagenRuta),
+                EstadoConservacionId = ecpecieAltaModel.EstadoConservacionId
+            };
+
         }
     }
 }

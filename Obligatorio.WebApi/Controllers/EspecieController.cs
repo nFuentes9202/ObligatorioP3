@@ -1,9 +1,11 @@
 ﻿using Dominio.Entidades;
 using LogicaAplicacion.InterfacesCasosUso.Especies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Obligatorio.WebApi.DTOS;
 using Obligatorio.WebApi.DTOS.ConversionesDTO;
 using Obligatorio.WebApi.DTOS.Especies;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Obligatorio.WebApi.Controllers
 {
@@ -24,9 +26,25 @@ namespace Obligatorio.WebApi.Controllers
             _useCaseGetEspecie = useCaseGetEspecie;
             _env = env;
         }
-        
-        //GET: api/<EspecieController>
+
+        /// <summary>
+        /// Obtiene un listado de todas las especies disponibles.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     GET api/Especies
+        ///
+        /// </remarks>
+        /// <returns>Una lista de especies</returns>
+        /// <response code="200">Devuelve el listado de especies</response>
+        /// <response code="404">Si no se encuentran especies</response>
+        /// <response code="500">Si ocurre un error interno en el servidor</response>
         [HttpGet]
+        [SwaggerOperation(Summary = "Obtiene un listado de todas las especies disponibles", Description = "Usa _useCaseGetEspecie.GetEspeciesDTO() para obtener un listado de especies")]
+        [ProducesResponseType(typeof(EspecieListadoDTO), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<EspecieListadoDTO> GetEspecies()
         {
             try
@@ -45,9 +63,72 @@ namespace Obligatorio.WebApi.Controllers
             }
         }
 
-        // POST api/<EspecieController>
+        /// <summary>
+        /// Obtiene el ID de una especie según su nombre científico.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     GET api/Especies/GetIdByNombreCientifico/TyrannosaurusRex
+        ///
+        /// </remarks>
+        /// <param name="nombreCientifico">Nombre científico de la especie a buscar</param>
+        /// <returns>ID de la especie</returns>
+        /// <response code="200">Devuelve el ID de la especie encontrada</response>
+        /// <response code="404">Si no se encuentra una especie con ese nombre científico</response>
+        /// <response code="400">Si ocurre un error durante la búsqueda</response>
+        [HttpGet("GetIdByNombreCientifico/{nombreCientifico}")]
+        [SwaggerOperation(Summary = "Obtiene el ID de una especie según su nombre científico", Description = "Usa _useCaseGetEspecieById.GetIdSegunNombreCientifico(nombreCientifico) para obtener el ID")]
+        [ProducesResponseType(typeof(int), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<int> GetIdByNombreCientifico(string nombreCientifico)
+        {
+            try
+            {
+                var idEspecie = _useCaseGetEspecieById.GetIdSegunNombreCientifico(nombreCientifico);
+                if (idEspecie != null)
+                {
+                    return Ok(idEspecie);
+                }
+                else
+                {
+                    return NotFound("Especie no encontrada.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones
+                return BadRequest($"Error al buscar la especie: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Crea una nueva especie.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     POST api/Especie
+        ///     {
+        ///        "nombreCientifico": "Nombre Científico",
+        ///        "descripcion": "Descripción",
+        ///        ...otros campos...
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="especieDTO">Datos de la nueva especie a crear</param>
+        /// <returns>Una nueva especie creada</returns>
+        /// <response code="201">Si la especie se crea correctamente</response>
+        /// <response code="400">Si la entrada es nula o inválida</response>
+        /// <response code="500">Si ocurre un error interno en el servidor</response>
         [HttpPost]
-        public ActionResult<Especie> Post([FromForm] EspecieAltaImagenDTO especieDTO)
+        [SwaggerOperation(Summary = "Crea una nueva especie", Description = "Usa _useCaseAltaEspecie.Alta(especieDTO) para crear una nueva especie")]
+        [ProducesResponseType(typeof(Especie), 201)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
+        public ActionResult<Especie> Post([FromBody] EspecieAltaDTO especieDTO)
         {
             if(especieDTO == null)
             {
@@ -56,18 +137,10 @@ namespace Obligatorio.WebApi.Controllers
 
             try
             {
-                var especie = MapeosEspecie.conversion(especieDTO);
+                    int Id = _useCaseAltaEspecie.Alta(especieDTO);
+                especieDTO.Id = Id;
 
-                if (GuardarImagen(especieDTO.Imagen, especie))
-                {
-                    _useCaseAltaEspecie.Alta(especie);
-                }
-                else
-                {
-                    return BadRequest("No se pudo guardar la imagen");
-                }
-
-                return CreatedAtRoute("GetById", new { id = especieDTO.Id }, especieDTO);
+                return CreatedAtRoute("GetById", new { id = Id }, especieDTO);
 
             }
             catch (Exception ex)
@@ -76,6 +149,61 @@ namespace Obligatorio.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Carga una imagen para una especie específica.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     POST api/Especie/CargarImagen?especieId=1
+        ///     [form-data con la imagen]
+        ///
+        /// </remarks>
+        /// <param name="imagen">Archivo de imagen a cargar</param>
+        /// <param name="especieId">ID de la especie para la cual se carga la imagen</param>
+        /// <returns>Resultado de la operación de carga de la imagen</returns>
+        /// <response code="200">Si la imagen se carga correctamente</response>
+        /// <response code="400">Si los parámetros son nulos o inválidos</response>
+        /// <response code="500">Si ocurre un error interno en el servidor</response>
+        [HttpPost("CargarImagen")]
+        [SwaggerOperation(Summary = "Carga una imagen para una especie específica", Description = "Usa GuardarImagen(imagen, especieAltaDto) para cargar y guardar la imagen")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CargarImagen(IFormFile imagen, int especieId)
+        {
+            if (imagen == null || especieId == null)
+            {
+                return BadRequest("Imagen y/o ID de la especie son requeridos.");
+            }
+            try
+            {
+
+
+                // Crear un DTO o modelo para pasar a GuardarImagen
+                var especieAltaDto = new EspecieAltaDTO
+                {
+                    Id = especieId,
+                    // Otros campos necesarios, si los hay
+                };
+
+                bool imagenGuardada = GuardarImagen(imagen, especieAltaDto);
+
+                if (imagenGuardada)
+                {
+                    // Aquí podrías realizar operaciones adicionales si es necesario
+                    return Ok(new { Mensaje = "Imagen cargada con éxito", RutaImagen = especieAltaDto.ImagenRuta });
+                }
+                else
+                {
+                    return BadRequest("No se pudo guardar la imagen.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al cargar la imagen: {ex.Message}");
+            }
+        }
 
         private bool GuardarImagen(IFormFile imagen, EspecieAltaDTO esp)
         {
@@ -121,8 +249,7 @@ namespace Obligatorio.WebApi.Controllers
                         //asincrónica de CopyTo. Sería: await imagen.CopyToAsync (f);
                         imagen.CopyTo(f);
                     }
-                    //GUARDAR EL NOMBRE DE LA IMAGEN SUBIDA EN EL OBJETO
-                    esp.ImagenRuta = nombreImagen;
+                    
                     return true;
                 }
 
@@ -139,7 +266,27 @@ namespace Obligatorio.WebApi.Controllers
 
         }
 
-        [HttpGet("{id}", Name = "GetEspecieById")] //Se  pone nombre a la ruta para usarla en el CreatedAtRoute
+        /// <summary>
+        /// Obtiene una especie por su ID.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     GET api/Especie/1
+        ///
+        /// </remarks>
+        /// <param name="id">ID de la especie a buscar</param>
+        /// <returns>La especie encontrada</returns>
+        /// <response code="200">Devuelve la especie encontrada</response>
+        /// <response code="400">Si el ID es nulo o inválido</response>
+        /// <response code="404">Si no se encuentra una especie con ese ID</response>
+        /// <response code="500">Si ocurre un error interno en el servidor</response>
+        [HttpGet("{id}", Name = "GetEspecieById")]
+        [SwaggerOperation(Summary = "Obtiene una especie por su ID", Description = "Usa _useCaseGetEspecieById.GetEspecie(id) para obtener la especie")]
+        [ProducesResponseType(typeof(EspecieListadoDTO), 200)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<EspecieListadoDTO> Get(int? id)
         {
             try

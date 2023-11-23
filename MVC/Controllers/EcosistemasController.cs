@@ -20,12 +20,7 @@ namespace MVC.Controllers
 {
     public class EcosistemasController : Controller
     {
-        private readonly RepositorioEcosistema _repoEcosistema;
-        private readonly RepositorioAmenaza _repoAmenaza;
         private IWebHostEnvironment _environment;
-        private readonly RepositorioEstadosConservacion _repoEstadosConservacion;
-        private readonly RepositorioPais _repoPaises;
-        private readonly RepositorioConfiguracion _repoConfiguracion;
 
         private static HttpClient _cli = new HttpClient();
 
@@ -37,7 +32,7 @@ namespace MVC.Controllers
 
 
 
-        public EcosistemasController(RepositorioEcosistema repoEcosistema, RepositorioAmenaza repoAmenaza, IWebHostEnvironment environment, RepositorioEstadosConservacion repositorioEstadosConservacion, RepositorioPais repoPais, RepositorioConfiguracion repoConfiguracion)
+        public EcosistemasController(IWebHostEnvironment environment)
         {
             if (_cli.BaseAddress == null)
             {
@@ -47,12 +42,8 @@ namespace MVC.Controllers
             _cli.DefaultRequestHeaders.Accept.Clear();
             _cli.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            _repoEcosistema = repoEcosistema;
-            _repoAmenaza = repoAmenaza;
             _environment = environment;
-            _repoEstadosConservacion = repositorioEstadosConservacion;
-            _repoPaises = repoPais;
-            _repoConfiguracion = repoConfiguracion;
+
         }
 
         // GET: Ecosistemas
@@ -201,6 +192,8 @@ namespace MVC.Controllers
         public IActionResult Create(EcosistemaAltaModel ecosistemaModel)
         {
             var ecosistemaModelCarga = new EcosistemaAltaModel();
+            ecosistemaModel.DescripcionImagen = ecosistemaModel.Descripcion;
+            ecosistemaModel.ImagenRuta = "Nula por ahora";
             try
             {
                 if (ecosistemaModel == null)
@@ -208,65 +201,61 @@ namespace MVC.Controllers
                     return View();
                 }
 
-                using (var formData = new MultipartFormDataContent())
-                {
-                    // Agregar propiedades básicas
-                    //formData.Add(new StringContent(ecosistemaModel.Id.ToString()));
-                    formData.Add(new StringContent(ecosistemaModel.Nombre));
-                    formData.Add(new StringContent(ecosistemaModel.AreaMetrosCuadrados.ToString()));
-                    formData.Add(new StringContent(ecosistemaModel.Descripcion));
-                    formData.Add(new StringContent(ecosistemaModel.Latitud.ToString(CultureInfo.InvariantCulture)));
-                    formData.Add(new StringContent(ecosistemaModel.Longitud.ToString(CultureInfo.InvariantCulture)));
-                    formData.Add(new StringContent(ecosistemaModel.EstadoConservacionId.ToString()));
+                var ecosistemaSerializado = JsonSerializer.Serialize(ecosistemaModel);
+                var contenido = new StringContent(ecosistemaSerializado, System.Text.Encoding.UTF8, "application/json");
+                var respuesta = _cli.PostAsync(_cli.BaseAddress, contenido).Result;
 
-                    // Agregar la imagen, si está presente
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    var respuestaString = respuesta.Content.ReadAsStringAsync().Result;
+                    int ecosistemaId = 0;
+                    using (JsonDocument doc = JsonDocument.Parse(respuestaString))
+                    {
+                        JsonElement root = doc.RootElement;
+                        ecosistemaId = root.GetProperty("id").GetInt32();
+
+                    }
+
                     if (ecosistemaModel.Imagen != null)
                     {
-                        var streamContent = new StreamContent(ecosistemaModel.Imagen.OpenReadStream());
-                        streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                        using (var formData = new MultipartFormDataContent())
                         {
-                            Name = "Imagen",
-                            FileName = ecosistemaModel.Imagen.FileName
-                        };
-                        formData.Add(streamContent, "Imagen", ecosistemaModel.Imagen.FileName);
+                            var streamContent = new StreamContent(ecosistemaModel.Imagen.OpenReadStream());
+                            streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                            {
+                                Name = "imagen",
+                                FileName = ecosistemaModel.Imagen.FileName
+                            };
+                            formData.Add(streamContent, "Imagen", ecosistemaModel.Imagen.FileName);
+                            formData.Add(new StringContent(ecosistemaId.ToString()), "ecosistemaId");
+
+
+
+                            var respuestaImagen = _cli.PostAsync($"{_cli.BaseAddress}/CargarImagen?especieId={ecosistemaId}", formData).Result;
+
+                            if (!respuestaImagen.IsSuccessStatusCode)
+                            {
+                                // Manejar error en la carga de la imagen
+                                var errorResponse = respuestaImagen.Content.ReadAsStringAsync().Result;
+                                TempData["Error"] = $"Problema al cargar la imagen: {errorResponse}";
+                                return RedirectToAction("Create");
+                            }
+                        }
                     }
-
-                    // Agregar descripción de la imagen
-                    if (!string.IsNullOrWhiteSpace(ecosistemaModel.DescripcionImagen))
-                    {
-                        formData.Add(new StringContent(ecosistemaModel.DescripcionImagen), "DescripcionImagen");
-                    }
-
-                    // Agregar IDs de amenazas seleccionadas
-                    foreach (var amenazaId in ecosistemaModel.AmenazasSeleccionadasIds)
-                    {
-                        formData.Add(new StringContent(amenazaId.ToString()), "AmenazasSeleccionadasIds");
-                    }
-                    foreach (var amenazaId in ecosistemaModel.AmenazasSeleccionadasIds)
-                    {
-                        formData.Add(new StringContent(amenazaId.ToString()), "AmenazasSeleccionadasIds");
-                    }
-
-                    // Agregar IDs de países
-                    foreach (var paisId in ecosistemaModel.PaisId)
-                    {
-                        formData.Add(new StringContent(paisId.ToString()), "PaisId");
-                    }
-
-                    var respuesta = _cli.PostAsync(_cli.BaseAddress, formData).Result;
-
-
-                    if (respuesta.IsSuccessStatusCode)
-                    {
-                        TempData["Feedback"] = "Se dió de alta correctamente el ecosistema";
-                        CargarListaDesplegables(ecosistemaModelCarga);
-                        return View(ecosistemaModelCarga);
-
-                    }
-                    var contenidoError = respuesta.Content.ReadAsStringAsync().Result;
-                    throw new Exception($"No se pudo guardar el ecosistema: {contenidoError}");
                 }
+                // Realiza la solicitud GET 
+
+
+
+
+
+                TempData["Error"] = $"Se carga correctamente!";
+
+                return RedirectToAction("Create");
             }
+
+
 
             catch (Exception ex)
             {
@@ -276,98 +265,33 @@ namespace MVC.Controllers
 
             }
         }
-        /*
-         * Metodo migrado a la webapi
-        private bool GuardarImagen(IFormFile imagen, EcosistemaAltaModel eco)
-        {
-            try
-            {
-                if (imagen == null || eco == null)
-                {
-                    throw new Exception("Es necesario subir una imagen");
-                }
-                // SUBIR LA IMAGEN
-                //ruta física de wwwroot
-                var extension = Path.GetExtension(imagen.FileName).ToLower();
-                if(extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                {
-                    throw new Exception("La extensión de la imagen no es válida. Solo se permiten .jpg, .jpeg y .png.");
-                }
-                string rutaFisicaWwwRoot = _environment.WebRootPath;
 
-                //ruta donde se guardan las fotos de las personas
-                string rutaFisicaFoto = Path.Combine
-                (rutaFisicaWwwRoot, "imagenes", "ecosistemas");
-
-                if (!Directory.Exists(rutaFisicaFoto))
-                {
-                    Directory.CreateDirectory(rutaFisicaFoto);
-                }
-                //Generamos el nombre
-                int sufijo = 1;
-                string nombreImagen;
-                do
-                {
-                    nombreImagen = $"{eco.Id}_{sufijo.ToString("D3")}{extension}";
-                    sufijo++;
-                } while (System.IO.File.Exists(Path.Combine(rutaFisicaFoto, nombreImagen)));
-
-                //FileStream permite manejar archivos
-                try
-                {
-                    //el método using libera los recursos del objeto FileStream al finalizar
-                    using (FileStream f = new FileStream(Path.Combine(rutaFisicaFoto, nombreImagen), FileMode.Create))
-                    {
-                        //Para archivos grandes o varios archivos usar la versión
-                        //asincrónica de CopyTo. Sería: await imagen.CopyToAsync (f);
-                        imagen.CopyTo(f);
-                    }
-                    //GUARDAR EL NOMBRE DE LA IMAGEN SUBIDA EN EL OBJETO
-                    eco.ImagenRuta = nombreImagen;
-                    return true;
-                }
-
-                catch (Exception ex)
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            
-        }
-        */
         public IActionResult Borrar(int id)
         {
             try
             {
-                if (HttpContext.Session.GetInt32("LogueadoId") == null)
+                var respuesta = _cli.DeleteAsync(_cli.BaseAddress + $"/{id}");
+                var resultado = respuesta.Result;
+                if(respuesta.Result.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
-                    return Unauthorized(); // No autorizado
-                }
-
-                if (_repoEcosistema.SePuedeBorrarEcosistema(id))
-                {
-                    _repoEcosistema.Delete(id);
-                    TempData["Feedback"] = "¡Ecosistema borrado exitosamente!";
+                    TempData["Feedback"] = $"Se eliminó el ecosistema con id {id}";
                 }
                 else
                 {
-                    // Si el ecosistema es habitado, redirige con un mensaje de error
-                    TempData["Feedback"] = "El ecosistema no puede ser borrado porque es habitado por especies.";
+                    TempData["Error"] = $"Error: {respuesta.Result.ReasonPhrase} ";
 
                 }
-                return RedirectToAction("Index");
+
+
+                return RedirectToAction(nameof(Index));
+
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                throw;
-            }
-            
+                TempData["Error"] = e.Message;
+                return RedirectToAction("Index");
+            }      
         }
     }
 }

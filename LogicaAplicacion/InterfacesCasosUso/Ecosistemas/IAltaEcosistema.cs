@@ -10,6 +10,6 @@ namespace LogicaAplicacion.InterfacesCasosUso.Ecosistemas
     // TODO Agregar items a interfaz
     public interface IAltaEcosistema
     {
-        void Alta(EcosistemaAltaDTO ecoAltaDTO);
+        int Alta(EcosistemaAltaDTO ecoAltaDTO);
     }
 }

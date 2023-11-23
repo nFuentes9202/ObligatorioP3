@@ -28,7 +28,7 @@ namespace LogicaAplicacion.CasosUso.Ecosistemas
             _repoAmenaza = repoAmenaza;
             _repoEstadosConservacion = repoEstadosConservacion;
         }
-        public void Alta(EcosistemaAltaDTO ecoAltaDTO)
+        public int Alta(EcosistemaAltaDTO ecoAltaDTO)
         {
             if(ecoAltaDTO == null)
             {
@@ -40,6 +40,7 @@ namespace LogicaAplicacion.CasosUso.Ecosistemas
             eco.Amenazas = amenazas.ToList();
             eco.Paises = paises.ToList();
             _repoEcosistema.Add(eco);
+            return eco.Id;
 
         }
 

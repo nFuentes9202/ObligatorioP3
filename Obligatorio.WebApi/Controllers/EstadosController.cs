@@ -1,6 +1,7 @@
 ﻿using LogicaAplicacion.CasosUso.DTOS.EstadosConservacion;
 using LogicaAplicacion.InterfacesCasosUso.EstadosConservacion;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,8 +17,24 @@ namespace Obligatorio.WebApi.Controllers
         {
             _getEstados = getEstados;
         }
-        // GET: api/<EstadosController>
+        /// <summary>
+        /// Obtiene una lista de estados de conservación.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     GET api/EstadoConservacion
+        ///
+        /// </remarks>
+        /// <returns>Una lista de estados de conservación</returns>
+        /// <response code="200">Devuelve la lista de estados de conservación</response>
+        /// <response code="404">Si no se encuentran estados de conservación</response>
+        /// <response code="500">Si ocurre un error interno en el servidor</response>
         [HttpGet]
+        [SwaggerOperation(Summary = "Obtiene una lista de estados de conservación", Description = "Usa _getEstados.GetAll() para obtener la lista de estados de conservación")]
+        [ProducesResponseType(typeof(EstadoConservacionDTO), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<EstadoConservacionDTO> Get()
         {
             try
@@ -37,31 +54,6 @@ namespace Obligatorio.WebApi.Controllers
                 throw;
             }
         }
-        /*
-        // GET api/<EstadosController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
-        // POST api/<EstadosController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<EstadosController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<EstadosController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-        */
     }
 }

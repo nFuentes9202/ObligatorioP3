@@ -11,6 +11,7 @@ namespace Dominio.InterfacesRepositorio
     {
         public bool SePuedeBorrarEcosistema(int? id);
         public bool Delete(int? id);
+        void Update(int id, string ruta);
 
         public IEnumerable<Ecosistema> ObtenerEcosistemasSegunId(IEnumerable<int> ids);
     }

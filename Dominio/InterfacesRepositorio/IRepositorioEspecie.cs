@@ -9,5 +9,9 @@ namespace Dominio.InterfacesRepositorio
 {
     public interface IRepositorioEspecie: IRepositorio<Especie>
     {
+        void Update(int id, string ruta);
+
+        int GetIdByUnique(string unique);
+
     }
 }

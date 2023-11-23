@@ -10,6 +10,6 @@ namespace LogicaAplicacion.InterfacesCasosUso.Especies
     // TODO Agregar items a interfaz
     public interface IAltaEspecie
     {
-        void Alta(EspecieAltaDTO especieAltaDTO);
+        int Alta(EspecieAltaDTO especieAltaDTO);
     }
 }

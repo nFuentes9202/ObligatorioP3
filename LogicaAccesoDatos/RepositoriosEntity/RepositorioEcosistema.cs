@@ -164,5 +164,23 @@ namespace LogicaAccesoDatos.RepositoriosEntity
             return null;
         }
 
+        public void Update(int id, string ruta)
+        {
+            if (id == null)
+            {
+                throw new EcosistemaException("El ecosistema no puede ser nulo");
+            }
+            var buscado = FindById(id);
+            buscado.Validar();
+            try
+            {
+                _db.Ecosistemas.Update(buscado);
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("No se pudo modificar el ecosistema");
+            }
+        }
     }
 }

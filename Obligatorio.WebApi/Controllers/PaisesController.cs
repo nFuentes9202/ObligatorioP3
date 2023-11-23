@@ -1,6 +1,7 @@
 ﻿using LogicaAplicacion.CasosUso.DTOS.Paises;
 using LogicaAplicacion.InterfacesCasosUso.Paises;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,8 +17,24 @@ namespace Obligatorio.WebApi.Controllers
         {
             _getPaises = getPaises;
         }
-        // GET: api/<PaisController>
+        /// <summary>
+        /// Obtiene una lista de países.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de solicitud:
+        ///
+        ///     GET api/Pais
+        ///
+        /// </remarks>
+        /// <returns>Una lista de países</returns>
+        /// <response code="200">Devuelve la lista de países</response>
+        /// <response code="404">Si no se encuentran países</response>
+        /// <response code="500">Si ocurre un error interno en el servidor</response>
         [HttpGet]
+        [SwaggerOperation(Summary = "Obtiene una lista de países", Description = "Usa _getPaises.GetAll() para obtener la lista de países")]
+        [ProducesResponseType(typeof(IEnumerable<PaisDTO>), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<PaisDTO> Get()
         {
             try
@@ -38,31 +55,5 @@ namespace Obligatorio.WebApi.Controllers
             }
         }
 
-        /*
-        // GET api/<PaisController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<PaisController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<PaisController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<PaisController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-        */
     }
 }

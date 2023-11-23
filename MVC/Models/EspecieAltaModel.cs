@@ -7,15 +7,15 @@ namespace MVC.Models
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "La descripción es necesaria")]
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
         
         [Display(Name = "Nombre Científico")]
         [Required(ErrorMessage = "El nombre científico es necesario")]
-        public string NombreCientifico { get; set; }
+        public string? NombreCientifico { get; set; }
 
         [Display(Name = "Nombre Vulgar")]
         [Required(ErrorMessage = "El nombre vulgar es necesario")]
-        public string NombreVulgar { get; set; }
+        public string? NombreVulgar { get; set; }
 
         [Display(Name = "Rango de peso en Kg")]
         [Required(ErrorMessage = "Escriba el peso por favor")]
@@ -27,7 +27,7 @@ namespace MVC.Models
 
         [Required(ErrorMessage = "Debe subir una imagen para la foto")]
         [Display(Name = "Foto")]
-        public IFormFile? Imagen { get; set; }
+        public IFormFile Imagen { get; set; }
 
         [Display(Name = "Descripción de la imagen")]
         [Required(ErrorMessage = "La descripción es necesaria")]

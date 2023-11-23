@@ -1,5 +1,6 @@
 ﻿using Dominio.Entidades;
 using LogicaAccesoDatos.RepositoriosEntity;
+using LogicaAplicacion.CasosUso.Especies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -164,67 +165,71 @@ namespace MVC.Controllers
 
         public IActionResult Create(EspecieAltaModel especieAltaModel)
         {
+            especieAltaModel.DescripcionImagen = especieAltaModel.Descripcion;
+            especieAltaModel.ImagenRuta = "Placeholder, no utilizada";
             var especieCarga = new EspecieAltaModel();
             try
             {
                 if (especieAltaModel == null)
                 {
-                    throw new Exception("Se debe seleccionar una imagen");
+                    TempData["Error"] = "Hubo un problema al cargar las especies, vuelva a intentarlo";
                 }
 
-                using (var formData = new MultipartFormDataContent())
+                var especieSerializada = JsonSerializer.Serialize(especieAltaModel);
+                var contenido = new StringContent(especieSerializada, System.Text.Encoding.UTF8, "application/json");
+                var respuesta = _cli.PostAsync(_cli.BaseAddress, contenido).Result;
+
+
+                if (respuesta.IsSuccessStatusCode)
                 {
-                    // Agregar propiedades básicas
-                    //formData.Add(new StringContent(especieAltaModel.Id.ToString()));
-                    formData.Add(new StringContent(especieAltaModel.Descripcion));
-                    formData.Add(new StringContent(especieAltaModel.NombreCientifico));
-                    formData.Add(new StringContent(especieAltaModel.NombreVulgar));
-                    formData.Add(new StringContent(especieAltaModel.RangoPesoKg.ToString()));
-                    formData.Add(new StringContent(especieAltaModel.RangoLongitudCm.ToString()));
+                    var respuestaString = respuesta.Content.ReadAsStringAsync().Result;
+                    int especieId = 0;
+                    using (JsonDocument doc = JsonDocument.Parse(respuestaString))
+                    {
+                        JsonElement root = doc.RootElement;
+                        especieId = root.GetProperty("id").GetInt32();
 
-                    // Agregar la imagen, si está presente
+                    }
+                    
                     if (especieAltaModel.Imagen != null)
-                    {
-                        var streamContent = new StreamContent(especieAltaModel.Imagen.OpenReadStream());
-                        streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
                         {
-                            Name = "Imagen",
-                            FileName = especieAltaModel.Imagen.FileName
-                        };
-                        formData.Add(streamContent, "Imagen", especieAltaModel.Imagen.FileName);
+                            using (var formData = new MultipartFormDataContent())
+                            {
+                                var streamContent = new StreamContent(especieAltaModel.Imagen.OpenReadStream());
+                                streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                                {
+                                    Name = "imagen",
+                                    FileName = especieAltaModel.Imagen.FileName
+                                };
+                                formData.Add(streamContent, "Imagen", especieAltaModel.Imagen.FileName);
+                                formData.Add(new StringContent(especieId.ToString()), "especieId");
+
+
+
+                            var respuestaImagen = _cli.PostAsync(_cli.BaseAddress + "/CargarImagen", formData).Result;
+
+                                if (!respuestaImagen.IsSuccessStatusCode)
+                                {
+                                // Manejar error en la carga de la imagen
+                                var errorResponse = respuestaImagen.Content.ReadAsStringAsync().Result;
+                                TempData["Error"] = $"Problema al cargar la imagen: {errorResponse}";
+                                return RedirectToAction("Create");
+                                }
+                            }
+                        }
                     }
+                    // Realiza la solicitud GET 
 
-                    // Agregar descripción de la imagen
-                    if (!string.IsNullOrWhiteSpace(especieAltaModel.DescripcionImagen))
-                    {
-                        formData.Add(new StringContent(especieAltaModel.DescripcionImagen), "DescripcionImagen");
-                    }
+                    
 
-                    // Agregar IDs de amenazas seleccionadas
-                    foreach (var amenazaId in especieAltaModel.AmenazasSeleccionadasIds)
-                    {
-                        formData.Add(new StringContent(amenazaId.ToString()), "AmenazasSeleccionadasIds");
-                    }
-                    foreach (var ecosistemaId in especieAltaModel.EcosistemasSeleccionadosIds)
-                    {
-                        formData.Add(new StringContent(ecosistemaId.ToString()), "EcosistemasSeleccionadosIds");
-                    }
-
-
-                    var respuesta = _cli.PostAsync(_cli.BaseAddress, formData).Result;
-
-
-                    if (respuesta.IsSuccessStatusCode)
-                    {
-                        TempData["Feedback"] = "Se dió de alta correctamente el ecosistema";
-                        CargarListaDesplegables(especieCarga);
-                        return View(especieCarga);
-
-                    }
-                    var contenidoError = respuesta.Content.ReadAsStringAsync().Result;
-                    throw new Exception($"No se pudo guardar el ecosistema: {contenidoError}");
-                }
+                    
+                
+                TempData["Error"] = $"Se carga correctamente!";
+                
+                return RedirectToAction("Create");
             }
+
+
 
             catch (Exception ex)
             {
