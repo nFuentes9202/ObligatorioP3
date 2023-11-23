@@ -1,6 +1,8 @@
 ﻿using Dominio.Entidades;
 using LogicaAplicacion.InterfacesCasosUso.Ecosistemas;
 using Microsoft.AspNetCore.Mvc;
+using Obligatorio.WebApi.DTOS;
+using Obligatorio.WebApi.DTOS.ConversionesDTO;
 using Obligatorio.WebApi.DTOS.Ecosistemas;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,12 +17,15 @@ namespace Obligatorio.WebApi.Controllers
         private IAltaEcosistema _useCaseAltaEcosistema;
         private IGetEcosistemaById _useCaseGetEcosistema;
         private IBorrarEcosistema _useCaseBorrarEcosistema;
-        public EcosistemaController(IGetEcosistemas get, IAltaEcosistema altaEco, IGetEcosistemaById useCaseGetEcosistema, IBorrarEcosistema useCaseBorrarEcosistema = null)
+
+        private IWebHostEnvironment _env;
+        public EcosistemaController(IGetEcosistemas get, IAltaEcosistema altaEco, IGetEcosistemaById useCaseGetEcosistema, IBorrarEcosistema useCaseBorrarEcosistema, IWebHostEnvironment env)
         {
             _useCaseGetAll = get;
             _useCaseAltaEcosistema = altaEco;
             _useCaseGetEcosistema = useCaseGetEcosistema;
             _useCaseBorrarEcosistema = useCaseBorrarEcosistema;
+            _env = env;
         }
         // GET: api/<EcosistemaController>
         [HttpGet]
@@ -62,8 +67,8 @@ namespace Obligatorio.WebApi.Controllers
         }
 
         // POST api/<EcosistemaController>
-        [HttpPost]
-        public ActionResult<Ecosistema>Post([FromBody] EcosistemaAltaDTO ecosistemaDTO)
+        [HttpPost("")]
+        public ActionResult<Ecosistema>Post([FromForm] EcosistemaAltaImagenDTO ecosistemaDTO)
         {
             if(ecosistemaDTO == null)
             {
@@ -71,14 +76,91 @@ namespace Obligatorio.WebApi.Controllers
             }
             try
             {
-                _useCaseAltaEcosistema.Alta(ecosistemaDTO);
+                
+                var ecosistema = MapeosEco.conversion(ecosistemaDTO);
+
+
+                if(GuardarImagen(ecosistemaDTO.Imagen, ecosistema))
+                {
+                    _useCaseAltaEcosistema.Alta(ecosistema);
+                }
+                else
+                {
+                    return BadRequest("No se pudo guardar la imagen");
+                }
+                
                 return CreatedAtRoute("GetById", new {id = ecosistemaDTO.Id}, ecosistemaDTO);
             }
             catch (Exception e)
             {
-
+                if(e.InnerException != null)
+                {
+                    return BadRequest($"Se produjo un error: {e.Message} - {e.InnerException.Message}");
+                }
                 return BadRequest(e.Message);
             }
+        }
+
+        private bool GuardarImagen(IFormFile imagen, EcosistemaAltaDTO eco)
+        {
+            try
+            {
+                if (imagen == null || eco == null)
+                {
+                    throw new Exception("Es necesario subir una imagen");
+                }
+                // SUBIR LA IMAGEN
+                //ruta física de wwwroot
+                var extension = Path.GetExtension(imagen.FileName).ToLower();
+                if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                {
+                    throw new Exception("La extensión de la imagen no es válida. Solo se permiten .jpg, .jpeg y .png.");
+                }
+                string rutaFisicaWwwRoot = _env.WebRootPath;
+
+                //ruta donde se guardan las fotos de las personas
+                string rutaFisicaFoto = Path.Combine
+                (rutaFisicaWwwRoot, "imagenes", "ecosistemas");
+
+                if (!Directory.Exists(rutaFisicaFoto))
+                {
+                    Directory.CreateDirectory(rutaFisicaFoto);
+                }
+                //Generamos el nombre
+                int sufijo = 1;
+                string nombreImagen;
+                do
+                {
+                    nombreImagen = $"{eco.Id}_{sufijo.ToString("D3")}{extension}";
+                    sufijo++;
+                } while (System.IO.File.Exists(Path.Combine(rutaFisicaFoto, nombreImagen)));
+
+                //FileStream permite manejar archivos
+                try
+                {
+                    //el método using libera los recursos del objeto FileStream al finalizar
+                    using (FileStream f = new FileStream(Path.Combine(rutaFisicaFoto, nombreImagen), FileMode.Create))
+                    {
+                        //Para archivos grandes o varios archivos usar la versión
+                        //asincrónica de CopyTo. Sería: await imagen.CopyToAsync (f);
+                        imagen.CopyTo(f);
+                    }
+                    //GUARDAR EL NOMBRE DE LA IMAGEN SUBIDA EN EL OBJETO
+                    eco.ImagenRuta = nombreImagen;
+                    return true;
+                }
+
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
         // PUT api/<EcosistemaController>/5

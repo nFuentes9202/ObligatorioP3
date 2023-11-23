@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MVC.Models;
 using MVC.Models.Conversiones;
+using System.Globalization;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace MVC.Controllers
@@ -30,7 +32,7 @@ namespace MVC.Controllers
         {
             if(_cli.BaseAddress == null)//Si la dirección base del cliente es nula
             {
-                _cli.BaseAddress = new Uri("https://localhost:44374/api/Especie");//Asignar la dirección base
+                _cli.BaseAddress = new Uri("https://localhost:7082/api/Especie");//Asignar la dirección base
             }
 
             _cli.DefaultRequestHeaders.Accept.Clear();//Limpiar los headers
@@ -109,7 +111,7 @@ namespace MVC.Controllers
                 }
 
                 //Cargar ecosistemas
-                var responseEcosistemas = _cli.GetAsync(new Uri(_cli.BaseAddress, "ecosistemas"));//Obtener la respuesta de la petición
+                var responseEcosistemas = _cli.GetAsync(new Uri(_cli.BaseAddress, "ecosistema"));//Obtener la respuesta de la petición
                 responseEcosistemas.Wait();//Esperar a que termine la petición
                 var resultEcosistemas = responseEcosistemas.Result;//Obtener el resultado de la petición
                 if (resultEcosistemas.IsSuccessStatusCode)//Si la petición fue exitosa
@@ -158,57 +160,81 @@ namespace MVC.Controllers
         }*/
 
         [HttpPost]
+        [RequestSizeLimit(104857600)]
 
-        public IActionResult Create(Models.EspecieAltaModel especieAltaModel, IFormFile imagen)
+        public IActionResult Create(EspecieAltaModel especieAltaModel)
         {
+            var especieCarga = new EspecieAltaModel();
             try
             {
-                if (especieAltaModel == null || imagen == null)
+                if (especieAltaModel == null)
                 {
                     throw new Exception("Se debe seleccionar una imagen");
                 }
 
-                if (GuardarImagen(imagen, especieAltaModel))
+                using (var formData = new MultipartFormDataContent())
                 {
-                    var configuracionValidaciones = _repoConfiguracion.Get();
+                    // Agregar propiedades básicas
+                    //formData.Add(new StringContent(especieAltaModel.Id.ToString()));
+                    formData.Add(new StringContent(especieAltaModel.Descripcion));
+                    formData.Add(new StringContent(especieAltaModel.NombreCientifico));
+                    formData.Add(new StringContent(especieAltaModel.NombreVulgar));
+                    formData.Add(new StringContent(especieAltaModel.RangoPesoKg.ToString()));
+                    formData.Add(new StringContent(especieAltaModel.RangoLongitudCm.ToString()));
 
-                    if (especieAltaModel.NombreVulgar.Length < configuracionValidaciones.TopeMinimoNombre || especieAltaModel.NombreVulgar.Length > configuracionValidaciones.TopeMaximoNombre)
+                    // Agregar la imagen, si está presente
+                    if (especieAltaModel.Imagen != null)
                     {
-                        throw new Exception($"El nombre debe tener entre {configuracionValidaciones.TopeMinimoNombre} y {configuracionValidaciones.TopeMaximoNombre} caracteres.");
-                    }
-                    if (especieAltaModel.NombreCientifico.Length < configuracionValidaciones.TopeMinimoNombre || especieAltaModel.NombreCientifico.Length > configuracionValidaciones.TopeMaximoNombre)
-                    {
-                        throw new Exception($"El nombre debe tener entre {configuracionValidaciones.TopeMinimoNombre} y {configuracionValidaciones.TopeMaximoNombre} caracteres.");
-                    }
-                    if (especieAltaModel.Descripcion.Length < configuracionValidaciones.TopeMinimoDescripcion || especieAltaModel.Descripcion.Length > configuracionValidaciones.TopeMaximoDescripcion)
-                    {
-                        throw new Exception($"La descripción debe tener entre {configuracionValidaciones.TopeMinimoDescripcion} y {configuracionValidaciones.TopeMaximoDescripcion} caracteres.");
+                        var streamContent = new StreamContent(especieAltaModel.Imagen.OpenReadStream());
+                        streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                        {
+                            Name = "Imagen",
+                            FileName = especieAltaModel.Imagen.FileName
+                        };
+                        formData.Add(streamContent, "Imagen", especieAltaModel.Imagen.FileName);
                     }
 
-                    IEnumerable<Amenaza> amenazas = _repoAmenaza.ObtenerAmenazasSegunId(especieAltaModel.AmenazasSeleccionadasIds);
-                    IEnumerable<Ecosistema> ecosistemas = _repoEcosistema.ObtenerEcosistemasSegunId(especieAltaModel.EcosistemasSeleccionadosIds);
-                    Especie esp = ConversionesEspecie.ModeloToEspecie(especieAltaModel);
-                    esp.Amenazas = amenazas.ToList();
-                    esp.Ecosistemas = ecosistemas.ToList();
-                    _repoEspecie.Add(esp);
-                    return View("Visualizar", especieAltaModel);
-                }
-                else
-                {
-                    throw new Exception("No se pudo crear imagen");
+                    // Agregar descripción de la imagen
+                    if (!string.IsNullOrWhiteSpace(especieAltaModel.DescripcionImagen))
+                    {
+                        formData.Add(new StringContent(especieAltaModel.DescripcionImagen), "DescripcionImagen");
+                    }
+
+                    // Agregar IDs de amenazas seleccionadas
+                    foreach (var amenazaId in especieAltaModel.AmenazasSeleccionadasIds)
+                    {
+                        formData.Add(new StringContent(amenazaId.ToString()), "AmenazasSeleccionadasIds");
+                    }
+                    foreach (var ecosistemaId in especieAltaModel.EcosistemasSeleccionadosIds)
+                    {
+                        formData.Add(new StringContent(ecosistemaId.ToString()), "EcosistemasSeleccionadosIds");
+                    }
+
+
+                    var respuesta = _cli.PostAsync(_cli.BaseAddress, formData).Result;
+
+
+                    if (respuesta.IsSuccessStatusCode)
+                    {
+                        TempData["Feedback"] = "Se dió de alta correctamente el ecosistema";
+                        CargarListaDesplegables(especieCarga);
+                        return View(especieCarga);
+
+                    }
+                    var contenidoError = respuesta.Content.ReadAsStringAsync().Result;
+                    throw new Exception($"No se pudo guardar el ecosistema: {contenidoError}");
                 }
             }
-            catch (DbUpdateException excep)
+
+            catch (Exception ex)
             {
-                TempData["Error"] = excep.InnerException.Message;
-                return RedirectToAction("Create");
-            }
-            catch (Exception e)
-            {
-                TempData["Error"] = e.Message;
-                return RedirectToAction("Create");
+                TempData["Error"] = ex.Message;
+                CargarListaDesplegables(especieCarga);
+                return View(especieCarga);
+
             }
         }
+        /*
         private bool GuardarImagen(IFormFile imagen, EspecieAltaModel esp)
         {
             try
@@ -270,7 +296,7 @@ namespace MVC.Controllers
             }
 
         }
-
+        */
         public IActionResult AsignarEspecie()
         {
             var especies = _repoEspecie.GetAll(); // Obtén todas las especies del repositorio

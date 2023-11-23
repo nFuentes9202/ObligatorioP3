@@ -25,9 +25,13 @@ namespace MVC.Models
         public decimal RangoLongitudCm { get; set; }
         public string? ImagenRuta { get; set; }
 
+        [Required(ErrorMessage = "Debe subir una imagen para la foto")]
+        [Display(Name = "Foto")]
+        public IFormFile? Imagen { get; set; }
+
         [Display(Name = "Descripción de la imagen")]
         [Required(ErrorMessage = "La descripción es necesaria")]
-        public string DescripcionImagen { get; set; }
+        public string? DescripcionImagen { get; set; }
         [Display(Name = "Seleccione un estado de conservación")]
         [Required(ErrorMessage = "El estado de conservación es requerido")]
         public int EstadoConservacionId { get; set; }

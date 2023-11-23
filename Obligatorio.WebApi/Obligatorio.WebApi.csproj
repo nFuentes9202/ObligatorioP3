@@ -16,4 +16,8 @@
     <ProjectReference Include="..\LogicaAplicacion\LogicaAplicacion.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\imagenes\" />
+  </ItemGroup>
+
 </Project>

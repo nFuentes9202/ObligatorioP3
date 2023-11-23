@@ -1,6 +1,9 @@
-﻿namespace Obligatorio.WebApi.DTOS.Ecosistemas
+﻿using Obligatorio.WebApi.DTOS.Ecosistemas;
+
+namespace Obligatorio.WebApi.DTOS
 {
-    public class EcosistemaAltaDTO
+    //Se tuvo que crear acá para poder usar IFormFile
+    public class EcosistemaAltaImagenDTO
     {
         public int Id { get; set; }
 
@@ -14,7 +17,7 @@
         public decimal Longitud { get; set; }
         public string? ImagenRuta { get; set; }
         public string? DescripcionImagen { get; set; }
-
+        public IFormFile? Imagen { get; set; }
         public int EstadoConservacionId { get; set; }
 
         //public SelectList TodosLosEstadosConservacion { get; set; }
@@ -24,5 +27,6 @@
 
         public IEnumerable<int> PaisId { get; set; }
         //public SelectList TodosLosPaises { get; set; }
+
     }
 }

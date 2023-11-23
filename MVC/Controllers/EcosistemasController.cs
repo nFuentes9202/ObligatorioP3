@@ -13,6 +13,8 @@ using Microsoft.Data.SqlClient;
 using Dominio.ExcepcionesEntidades;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Globalization;
+using System.Net.Http.Headers;
 
 namespace MVC.Controllers
 {
@@ -105,6 +107,10 @@ namespace MVC.Controllers
             try
             {
                 CargarListaDesplegables(ecosistemaAltaModel);
+                if(ecosistemaAltaModel.TodasLasAmenazas == null || ecosistemaAltaModel.TodosLosEstadosConservacion == null || ecosistemaAltaModel.TodosLosPaises == null)
+                {
+                    throw new Exception();
+                }
             }
             catch (Exception)
             {
@@ -143,7 +149,7 @@ namespace MVC.Controllers
                 {
                     string contenidoAmenazas = resultado.Content.ReadAsStringAsync().Result;
                     listaAmenazas = JsonSerializer.Deserialize<IEnumerable<AmenazaModel>>(contenidoAmenazas, _serializerOptions);
-                    SelectList amenazas = new SelectList(listaPaises, "Id", "Nombre");//esta llamando a listaPaises deberia ir listaAmenazas
+                    SelectList amenazas = new SelectList(listaAmenazas, "Id", "Descripcion");//esta llamando a listaPaises deberia ir listaAmenazas
                     ecoAltaModel.TodasLasAmenazas = amenazas;
                 }
 
@@ -155,7 +161,7 @@ namespace MVC.Controllers
                 {
                     string contenidoEstados = resultado.Content.ReadAsStringAsync().Result;
                     listaEstadoConservacion = JsonSerializer.Deserialize<IEnumerable<EstadoConservacionModel>>(contenidoEstados, _serializerOptions);
-                    SelectList estados = new SelectList(listaPaises, "Id", "Nombre");//esta llamando a listaPaises deberia ir listaEstadoConservacion
+                    SelectList estados = new SelectList(listaEstadoConservacion, "Id", "Nombre");//esta llamando a listaPaises deberia ir listaEstadoConservacion
                     ecoAltaModel.TodosLosEstadosConservacion = estados;
                 }
             }
@@ -165,6 +171,10 @@ namespace MVC.Controllers
                 throw;
             }
         }
+        /*
+         * 
+         * Codigo viejo, no lo borro por si lo precisamos de alguna manera
+         * 
         private IEnumerable<PaisModel> LlenarPaises()
         {
             IEnumerable<Pais> paises = _repoPaises.GetAll();
@@ -184,56 +194,90 @@ namespace MVC.Controllers
             IEnumerable<EstadoConservacionModel> estadosModel = ConversionesEstadosConservacion.FromLista(estados);
             return estadosModel;
         }
+        */
 
         [HttpPost]
-
-        public IActionResult Create(Models.EcosistemaAltaModel ecosistemaModel, IFormFile imagen)
+        [RequestSizeLimit(104857600)]
+        public IActionResult Create(EcosistemaAltaModel ecosistemaModel)
         {
+            var ecosistemaModelCarga = new EcosistemaAltaModel();
             try
             {
-                if(ecosistemaModel == null || imagen == null)
+                if (ecosistemaModel == null)
                 {
-                    throw new Exception("Se debe seleccionar una imagen");
+                    return View();
                 }
 
-                if (GuardarImagen(imagen, ecosistemaModel))
+                using (var formData = new MultipartFormDataContent())
                 {
-                    var configuracionValidaciones = _repoConfiguracion.Get();
+                    // Agregar propiedades básicas
+                    //formData.Add(new StringContent(ecosistemaModel.Id.ToString()));
+                    formData.Add(new StringContent(ecosistemaModel.Nombre));
+                    formData.Add(new StringContent(ecosistemaModel.AreaMetrosCuadrados.ToString()));
+                    formData.Add(new StringContent(ecosistemaModel.Descripcion));
+                    formData.Add(new StringContent(ecosistemaModel.Latitud.ToString(CultureInfo.InvariantCulture)));
+                    formData.Add(new StringContent(ecosistemaModel.Longitud.ToString(CultureInfo.InvariantCulture)));
+                    formData.Add(new StringContent(ecosistemaModel.EstadoConservacionId.ToString()));
 
-                    if (ecosistemaModel.Nombre.Length < configuracionValidaciones.TopeMinimoNombre || ecosistemaModel.Nombre.Length > configuracionValidaciones.TopeMaximoNombre)
+                    // Agregar la imagen, si está presente
+                    if (ecosistemaModel.Imagen != null)
                     {
-                        throw new Exception($"El nombre debe tener entre {configuracionValidaciones.TopeMinimoNombre} y {configuracionValidaciones.TopeMaximoNombre} caracteres.");
+                        var streamContent = new StreamContent(ecosistemaModel.Imagen.OpenReadStream());
+                        streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                        {
+                            Name = "Imagen",
+                            FileName = ecosistemaModel.Imagen.FileName
+                        };
+                        formData.Add(streamContent, "Imagen", ecosistemaModel.Imagen.FileName);
                     }
 
-                    if (ecosistemaModel.Descripcion.Length < configuracionValidaciones.TopeMinimoDescripcion || ecosistemaModel.Descripcion.Length > configuracionValidaciones.TopeMaximoDescripcion)
+                    // Agregar descripción de la imagen
+                    if (!string.IsNullOrWhiteSpace(ecosistemaModel.DescripcionImagen))
                     {
-                        throw new Exception($"La descripción debe tener entre {configuracionValidaciones.TopeMinimoDescripcion} y {configuracionValidaciones.TopeMaximoDescripcion} caracteres.");
+                        formData.Add(new StringContent(ecosistemaModel.DescripcionImagen), "DescripcionImagen");
                     }
 
-                    IEnumerable<Amenaza> amenazas = _repoAmenaza.ObtenerAmenazasSegunId(ecosistemaModel.AmenazasSeleccionadasIds);
-                    IEnumerable<Pais> paises = _repoPaises.ObtenerPaisesSegunId(ecosistemaModel.PaisId);
-                    Ecosistema eco = ConversionesEcosistema.ModeloToEcosistema(ecosistemaModel);
-                    eco.Amenazas = amenazas.ToList();
-                    eco.Paises = paises.ToList();
-                    _repoEcosistema.Add(eco);
-                    return View("Visualizar",ecosistemaModel);
-                }
-                else
-                {
-                    throw new Exception("No se pudo crear imagen");
+                    // Agregar IDs de amenazas seleccionadas
+                    foreach (var amenazaId in ecosistemaModel.AmenazasSeleccionadasIds)
+                    {
+                        formData.Add(new StringContent(amenazaId.ToString()), "AmenazasSeleccionadasIds");
+                    }
+                    foreach (var amenazaId in ecosistemaModel.AmenazasSeleccionadasIds)
+                    {
+                        formData.Add(new StringContent(amenazaId.ToString()), "AmenazasSeleccionadasIds");
+                    }
+
+                    // Agregar IDs de países
+                    foreach (var paisId in ecosistemaModel.PaisId)
+                    {
+                        formData.Add(new StringContent(paisId.ToString()), "PaisId");
+                    }
+
+                    var respuesta = _cli.PostAsync(_cli.BaseAddress, formData).Result;
+
+
+                    if (respuesta.IsSuccessStatusCode)
+                    {
+                        TempData["Feedback"] = "Se dió de alta correctamente el ecosistema";
+                        CargarListaDesplegables(ecosistemaModelCarga);
+                        return View(ecosistemaModelCarga);
+
+                    }
+                    var contenidoError = respuesta.Content.ReadAsStringAsync().Result;
+                    throw new Exception($"No se pudo guardar el ecosistema: {contenidoError}");
                 }
             }
-            catch(DbUpdateException excep)
+
+            catch (Exception ex)
             {
-                TempData["Error"] = excep.InnerException.Message;
-                return RedirectToAction("Create");
-            }
-            catch (Exception e)
-            {
-                TempData["Error"] = e.Message;
-                return RedirectToAction("Create");
+                TempData["Error"] = ex.Message;
+                CargarListaDesplegables(ecosistemaModelCarga);
+                return View(ecosistemaModelCarga);
+
             }
         }
+        /*
+         * Metodo migrado a la webapi
         private bool GuardarImagen(IFormFile imagen, EcosistemaAltaModel eco)
         {
             try
@@ -295,7 +339,7 @@ namespace MVC.Controllers
             }
             
         }
-
+        */
         public IActionResult Borrar(int id)
         {
             try

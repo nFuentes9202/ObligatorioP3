@@ -1,8 +1,6 @@
-﻿using Dominio.Entidades;
-
-namespace Obligatorio.WebApi.DTOS.Especies
+﻿namespace Obligatorio.WebApi.DTOS
 {
-    public class EspecieAltaDTO
+    public class EspecieAltaImagenDTO
     {
         public int Id { get; set; }
         public string Descripcion { get; set; }
@@ -11,10 +9,11 @@ namespace Obligatorio.WebApi.DTOS.Especies
         public decimal RangoPesoKg { get; set; }
         public decimal RangoLongitudCm { get; set; }
         public string? ImagenRuta { get; set; }
-        public string? DescripcionImagen { get; set; }
+        public IFormFile? Imagen { get; set; }
+
+        public string DescripcionImagen { get; set; }
         public int EstadoConservacionId { get; set; }
         public IEnumerable<int> AmenazasSeleccionadasIds { get; set; }
         public IEnumerable<int> EcosistemasSeleccionadosIds { get; set; }
-
     }
 }

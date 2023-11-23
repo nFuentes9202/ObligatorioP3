@@ -40,6 +40,7 @@ builder.Services.AddScoped<IGetEcosistemaById, GetEcosistemaById>();
 builder.Services.AddScoped<IModificarConfiguracion, ModificarConfiguracion>();
 builder.Services.AddScoped<IBorrarEcosistema, BorrarEcosistema>();
 builder.Services.AddScoped<IAltaEspecie, AltaEspecie>();
+builder.Services.AddScoped<IGetEspecies, GetEspecies>();
 builder.Services.AddScoped<IGetPaises, GetPaises>();
 builder.Services.AddScoped<IGetAmenazas, GetAmenazas>();
 builder.Services.AddScoped<IGetEstadosConservacion, GetEstadosConservacion>();
@@ -56,6 +57,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
