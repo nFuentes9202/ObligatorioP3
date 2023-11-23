@@ -1,4 +1,4 @@
-﻿@model Dominio.Entidades.ConfiguracionValidaciones
+﻿@model ConfiguracionModel
 
 <!DOCTYPE html>
 <html>
@@ -12,6 +12,12 @@
     {
         <div class="alert alert-success">
             @TempData["Feedback"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Error"]
         </div>
     }
     <form asp-action="GuardarTopes" method="post">

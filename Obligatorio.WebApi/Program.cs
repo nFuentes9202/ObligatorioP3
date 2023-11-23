@@ -43,6 +43,8 @@ builder.Services.AddScoped<IAltaEspecie, AltaEspecie>();
 builder.Services.AddScoped<IGetEspecies, GetEspecies>();
 builder.Services.AddScoped<IGetPaises, GetPaises>();
 builder.Services.AddScoped<IGetAmenazas, GetAmenazas>();
+builder.Services.AddScoped<IGetConfiguracion, GetConfiguracion>();
+
 builder.Services.AddScoped<IGetEstadosConservacion, GetEstadosConservacion>();
 
 

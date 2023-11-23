@@ -7,36 +7,26 @@ using Usuarios.Entidades;
 
 namespace Usuarios.InterfacesRepositorio
 {
-    public class RepositorioUsuario : IRepositorio<Usuario>
+    public interface RepositorioUsuario : IRepositorio<Usuario>
     {
-        public void Add(Usuario obj)
-        {
-            throw new NotImplementedException();
-        }
+        public void Add(Usuario obj);
 
-        public void Delete(Usuario obj)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Usuario FindById(int? id)
-        {
-            throw new NotImplementedException();
-        }
+        public void Delete(Usuario obj);
 
-        public IEnumerable<Usuario> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Update(Usuario obj)
-        {
-            throw new NotImplementedException();
-        }
+        public Usuario FindById(int? id);
+
+
+        public IEnumerable<Usuario> GetAll();
+
+
+        public void Update(Usuario obj);
+
 
         public Usuario Login(string alias, string password)
-        {
-            throw new NotImplementedException();
-        }
+        ;
+
+        public bool AliasExiste(string alias);
     }
 }

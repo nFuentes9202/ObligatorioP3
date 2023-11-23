@@ -9,5 +9,6 @@ namespace Dominio.InterfacesRepositorio
 {
     public interface IRepositorioConfiguracion:IRepositorio<ConfiguracionValidaciones>
     {
+        public ConfiguracionValidaciones Get();
     }
 }

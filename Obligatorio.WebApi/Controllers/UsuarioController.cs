@@ -8,6 +8,7 @@ namespace Obligatorio.WebApi.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
+        /*
         // GET: api/<UsuarioController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -21,6 +22,7 @@ namespace Obligatorio.WebApi.Controllers
         {
             return "value";
         }
+        */
 
         // POST api/<UsuarioController>
         [HttpPost]
@@ -28,16 +30,5 @@ namespace Obligatorio.WebApi.Controllers
         {
         }
 
-        // PUT api/<UsuarioController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UsuarioController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

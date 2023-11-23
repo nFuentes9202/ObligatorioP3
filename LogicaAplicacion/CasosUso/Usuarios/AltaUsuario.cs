@@ -1,4 +1,5 @@
-﻿using LogicaAplicacion.InterfacesCasosUso.Usuarios;
+﻿using LogicaAplicacion.CasosUso.DTOS.Usuarios;
+using LogicaAplicacion.InterfacesCasosUso.Usuarios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,12 @@ namespace LogicaAplicacion.CasosUso.Usuarios
         {
             _repoUsu = repoUsu;
         }
-        public void Ejecutar(Usuario usuario)
+
+        public void Alta(UsuarioDTO usuarioDTO)
         {
             throw new NotImplementedException();
         }
+      
+
     }
 }

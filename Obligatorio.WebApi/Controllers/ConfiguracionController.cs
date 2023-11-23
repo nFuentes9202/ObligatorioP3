@@ -2,39 +2,45 @@
 using LogicaAplicacion.CasosUso.DTOS.Configuracion;
 using LogicaAplicacion.InterfacesCasosUso.Configuracion;
 using Microsoft.AspNetCore.Mvc;
+using Obligatorio.WebApi.DTOS.Ecosistemas;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Obligatorio.WebApi.Controllers
 {
+    
+
     [Route("api/[controller]")]
     [ApiController]
     public class ConfiguracionController : ControllerBase
     {
+        private readonly IGetConfiguracion _cuGetConfig;
         private IModificarConfiguracion _cuModificarConfig;
 
-        public ConfiguracionController(IModificarConfiguracion cuModificarconfig) {
+        public ConfiguracionController(IModificarConfiguracion cuModificarconfig, IGetConfiguracion cuGetConfig)
+        {
             _cuModificarConfig = cuModificarconfig;
+            _cuGetConfig = cuGetConfig;
         }
 
-        // GET: api/<ConfiguracionController>
+        // GET: api/<EcosistemaController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<ConfiguracionDTO> GetConfiguracion()
         {
-            return new string[] { "value1", "value2" };
-        }
+            try
+            {
+                var configuracion = _cuGetConfig.GetConfiguracionPrimera();
+                if (configuracion == null)
+                {
+                    return NotFound();
+                }
+                return Ok(configuracion);
+            }
+            catch (Exception e)
+            {
 
-        // GET api/<ConfiguracionController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<ConfiguracionController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
+                return StatusCode(500, e.Message);
+            }
         }
 
         // PUT api/<ConfiguracionController>/5
@@ -43,10 +49,9 @@ namespace Obligatorio.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<ConfiguracionValidaciones> Put(int? id, [FromBody] ConfiguracionDTO configDTO)
         {
-            if(id == null)
-            {
-                return BadRequest("Debe proporcionar la id de la configuración a editar");
-            }
+            id = 1;
+            configDTO.Id = (int)id;
+
             if(configDTO == null)
             {
                 return BadRequest("Debe proporcionar la configuración a editar");
@@ -65,12 +70,6 @@ namespace Obligatorio.WebApi.Controllers
 
                 return BadRequest(e.Message);
             }
-        }
-
-        // DELETE api/<ConfiguracionController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Obligatorio.WebApi.DTOS.Ecosistemas;
+﻿using LogicaAplicacion.CasosUso.DTOS.Usuarios;
+using Obligatorio.WebApi.DTOS.Ecosistemas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace LogicaAplicacion.InterfacesCasosUso.Usuarios
     // TODO Agregar items a interfaz
     public interface IAltaUsuario
     {
-        //void Alta(UsuarioDTO usuarioDTO);
+        public void Alta(UsuarioDTO usuarioDTO);
 
     }
 }

@@ -47,7 +47,7 @@ namespace LogicaAccesoDatos.RepositoriosEntity
 
         public IEnumerable<ConfiguracionValidaciones> GetAll()
         {
-            throw new NotImplementedException();
+            return _db.Configuraciones;
         }
 
         public void Update(ConfiguracionValidaciones obj)
