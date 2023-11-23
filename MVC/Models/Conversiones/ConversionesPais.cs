@@ -16,5 +16,15 @@ namespace MVC.Models.Conversiones
                 });
             return listaModels.ToList();
         }
+
+        internal static Pais PaisAltaModelAPais(PaisAltaModel paisAltaModel)
+        {
+            return new Pais
+            {
+                Id = paisAltaModel.Id,
+                CodigoAlpha3 = paisAltaModel.CodigoAlpha3,
+                Nombre = paisAltaModel.CommonName
+            };
+        }
     }
 }
