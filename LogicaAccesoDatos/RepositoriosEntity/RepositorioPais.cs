@@ -17,12 +17,21 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         }
         public void Add(Pais obj)
         {
-            throw new NotImplementedException();
+            _db.Paises.Add(obj);
+            _db.SaveChanges();
         }
 
         public void Delete(Pais obj)
         {
-            throw new NotImplementedException();
+            _db.Paises.Remove(obj);
+            _db.SaveChanges();
+        }
+
+        public void DeleteAll()
+        {
+            var paises = _db.Paises.ToList();
+            _db.Paises.RemoveRange(paises);
+            _db.SaveChanges();
         }
 
         public Pais FindById(int? id)
@@ -51,6 +60,11 @@ namespace LogicaAccesoDatos.RepositoriosEntity
         public void Update(Pais obj)
         {
             throw new NotImplementedException();
+        }
+
+        public bool EstaEnLaDatabase(Pais obj)
+        {
+            return _db.Paises.Any(p => p.CodigoAlpha3 == obj.CodigoAlpha3);
         }
     }
 }
